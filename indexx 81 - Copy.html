@@ -3,248 +3,1652 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Aplikasi Input Nilai — Firestore (Secure)</title>
+<title>Aplikasi Input Nilai — Firestore (Mobile Friendly)</title>
 <style>
-/* ... (Gunakan CSS Anda yang sudah ada di sini) ... */
-:root { --bg: #f8fafc; --card: #ffffff; --primary: #06b6d4; --primary-dark: #0284c7; --muted: #64748b; --radius: 16px; --radius-sm: 10px; }
-* { box-sizing: border-box; font-family: Inter, sans-serif; transition: all .2s ease; }
-body { margin: 0; background: linear-gradient(180deg,#f0f4f8,#ffffff); color: #222; font-size: 15px; }
-.container { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px; padding: 15px 0; border-bottom: 1px solid #eee; }
-.auth-area { display:flex; gap:8px; align-items:center; }
-.card, .panel { background: var(--card); border-radius: var(--radius); padding: 16px; border:1px solid rgba(0,0,0,.06); box-shadow: 0 8px 24px rgba(0,0,0,.06); }
-.tabs { display:flex; gap:6px; padding:6px; background:#e0f2fe; border-radius:16px; overflow-x:auto; margin-bottom:12px; }
-.tab { padding:8px 16px; border-radius:14px; cursor:pointer; font-weight:600; color:var(--primary-dark); background:rgba(255,255,255,0.6); white-space:nowrap; }
-.tab.active { background:linear-gradient(135deg,var(--primary),var(--primary-dark)); color:#fff; }
-.grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-.btn { display:inline-flex; align-items:center; justify-content:center; padding:10px 16px; border-radius:var(--radius-sm); border:none; cursor:pointer; font-weight:600; color:#fff; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); }
-.btn.ghost { background:#f1f5f9; color:var(--muted); border:1px solid #cbd5e1; }
-@media(max-width:900px){ .grid { grid-template-columns:1fr; } }
-/* Utility Classes */
-.hidden { display: none !important; }
+/* =========================
+   ROOT THEME
+========================= */
+:root {
+  --bg: #f8fafc;
+  --card: #ffffff;
+
+  --primary: #06b6d4;
+  --primary-dark: #0284c7;
+  --primary-soft: #e0f7ff;
+
+  --danger: #ef4444;
+  --danger-dark: #dc2626;
+
+  --muted: #64748b;
+
+  --radius: 16px;
+  --radius-sm: 10px;
+
+  --shadow-sm: 0 2px 6px rgba(0,0,0,.06);
+  --shadow-md: 0 8px 24px rgba(0,0,0,.08);
+}
+
+/* =========================
+   GLOBAL RESET
+========================= */
+* {
+  box-sizing: border-box;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  transition: background-color .2s ease,
+              color .2s ease,
+              box-shadow .2s ease,
+              transform .2s ease;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg,#f0f4f8,#ffffff);
+  color: #222;
+  font-size: 15px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  background: linear-gradient(135deg,var(--primary-dark),var(--primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* =========================
+   HEADER
+========================= */
+header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.auth-area {
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+/* =========================
+   CARD & PANEL (SOFT BORDER)
+========================= */
+.card,
+.panel {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  border:1px solid rgba(0,0,0,.06);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.04),
+    0 8px 24px rgba(0,0,0,.06);
+}
+
+.panel {
+  background: linear-gradient(180deg,#ffffff,#f8fafc);
+}
+
+.panel:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* =========================
+   TABS (SMOOTH & ELEGANT)
+========================= */
+.tabs {
+  display:flex;
+  gap:6px;
+  padding:6px;
+  background:linear-gradient(180deg,#e0f2fe,#f0f9ff);
+  border-radius:16px;
+  border:1px solid rgba(6,182,212,.25);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.6);
+  overflow-x:auto;
+  margin-bottom:12px;
+}
+
+.tab {
+  padding:8px 16px;
+  border-radius:14px;
+  cursor:pointer;
+  font-weight:600;
+  color:var(--primary-dark);
+  background:rgba(255,255,255,.6);
+  border:1px solid rgba(6,182,212,.15);
+  white-space:nowrap;
+  backdrop-filter: blur(4px);
+transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab:hover {
+  background:var(--primary-soft);
+  border-color:rgba(6,182,212,.35);
+}
+
+.tab.active {
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;
+  border-color:transparent;
+  box-shadow:0 6px 16px rgba(6,182,212,.45);
+transform: scale(1.05); /* Sedikit membesar saat aktif agar terasa interaktif */
+}
+
+/* =========================
+   GRID
+========================= */
+.grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  justify-items:center;
+}
+
+/* =========================
+   FORM
+========================= */
+label {
+  display:block;
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+input[type=text],
+input[type=number],
+select {
+  width:100%;
+  padding:10px;
+  border-radius:var(--radius-sm);
+  border:1px solid #ccc;
+}
+
+input:focus,
+select:focus {
+  outline:none;
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(6,182,212,.25);
+}
+
+/* =========================
+   BUTTON SYSTEM
+========================= */
+.btn {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px 16px;
+  border-radius:var(--radius-sm);
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+  color:#fff;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  box-shadow:0 4px 12px rgba(6,182,212,.35);
+}
+
+.btn:hover {
+  transform:translateY(-1px);
+  box-shadow:0 6px 16px rgba(6,182,212,.45);
+}
+
+.btn.small {
+  padding:6px 12px;
+  font-size:13px;
+}
+
+/* EDIT */
+.btn.edit,
+.btnEdit,
+.btnEditTx {
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  border:1px solid var(--primary-dark);
+}
+
+/* DELETE NORMAL */
+.btn.delete,
+.btnDel,
+.btnDelTx {
+  background:linear-gradient(135deg,var(--danger),var(--danger-dark));
+  border:1px solid var(--danger-dark);
+  box-shadow:0 3px 10px rgba(239,68,68,.35);
+}
+
+/* DELETE ALL (SUPER RED) */
+.btn.delete-all,
+.btn.hapus-semua {
+  background: linear-gradient(135deg,#ff4d4f,#dc2626);
+  border: 1px solid #b91c1c;
+  box-shadow:0 6px 18px rgba(239,68,68,.45);
+}
+
+.btn.delete-all:hover,
+.btn.hapus-semua:hover {
+  background: linear-gradient(135deg,#dc2626,#b91c1c);
+  transform:translateY(-1px) scale(1.02);
+  box-shadow:0 8px 24px rgba(239,68,68,.55);
+}
+
+/* GHOST */
+.btn.ghost {
+  background:#f1f5f9;
+  color:var(--muted);
+  box-shadow:none;
+  border:1px solid #cbd5e1;
+}
+
+.btn.ghost:hover {
+  background:var(--primary);
+  color:#fff;
+  border-color:var(--primary-dark);
+}
+
+/* =========================
+   SANTRI LIST
+========================= */
+.santri-list {
+  max-height:380px;
+  overflow:auto;
+  margin-top:10px;
+  padding:8px;
+  border-radius:12px;
+  border:1px dashed rgba(0,0,0,.1);
+  background:#fafafa;
+}
+
+.santri-row {
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:8px;
+  border-radius:10px;
+}
+
+.santri-row:nth-child(odd) {
+  background:rgba(0,0,0,.02);
+}
+
+.santri-row:hover {
+  background:var(--primary-soft);
+}
+
+/* =========================
+   TABLE (SMOOTH & MODERN)
+========================= */
+.transactions {
+  margin-top:12px;
+  overflow-x:auto;
+  border-radius:14px;
+  border:1px solid rgba(0,0,0,.06);
+  box-shadow: var(--shadow-sm);
+}
+
+table {
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  border-radius:14px;
+  overflow:hidden;
+}
+
+th, td {
+  padding:10px 12px;
+  font-size:13px;
+  border-bottom:1px solid rgba(0,0,0,.05);
+}
+
+th {
+  background:linear-gradient(180deg,#f8fafc,#f1f5f9);
+  color:var(--muted);
+  font-weight:700;
+}
+
+tbody tr:last-child td {
+  border-bottom:none;
+}
+
+tbody tr:hover {
+  background:rgba(6,182,212,.08);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media(max-width:900px){
+  .grid {
+    grid-template-columns:1fr;
+  }
+  .panel {
+    width:100%;
+  }
+}
+
+@media(max-width:600px){
+  body { font-size:14px; padding:12px; }
+  h1 { font-size:18px; }
+
+  table, thead, tbody, th, td, tr {
+    display:block;
+    width:100%;
+  }
+
+  thead { display:none; }
+
+  tr {
+    margin-bottom:10px;
+    border-bottom:1px solid rgba(0,0,0,.1);
+  }
+
+  td {
+    display:flex;
+    justify-content:space-between;
+    padding:6px 8px;
+  }
+
+  td::before {
+    content:attr(data-label);
+    font-weight:600;
+    color:var(--muted);
+  }
+}
+
+button:disabled {
+  opacity:.5;
+  cursor:not-allowed;
+}
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.badge {
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+input[type="number"] {
+  font-size: 16px; /* Mencegah auto-zoom di iOS Safari */
+  -moz-appearance: textfield;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.btn.edit {
+  background: linear-gradient(135deg, #f59e0b, #d97706); /* Warna Oranye/Amber */
+  border: 1px solid #b45309;
+  box-shadow: 0 3px 10px rgba(245, 158, 11, 0.3);
+  margin-right: 4px; /* Memberi jarak dengan tombol hapus */
+}
+
+.btn.edit:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  transform: translateY(-1px);
+}
+/* Animasi konten masuk */
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+#mainPanel {
+  animation: fadeIn 0.4s ease-out;
+  /* Memastikan transisi smooth saat tinggi panel berubah */
+  transition: all 0.3s ease;
+}
+/* Efek saat tombol ditekan */
+.btn:active, .tab:active {
+  transform: scale(0.95);
+  filter: brightness(0.9);
+}
+
+/* Membuat scrollbar di tab mobile lebih halus */
+.tabs {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Menghilangkan scrollbar tapi tetap bisa di-scroll (opsional agar bersih) */
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+.tabs {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+/* Animasi Putar */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+  margin-right: 10px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* State tombol saat loading */
+.btn-loading {
+  pointer-events: none; /* Mencegah klik ganda */
+  opacity: 0.8;
+}
+.badge-uh { background: #dcfce7; color: #166534; }
+.badge-pts { background: #fef9c3; color: #854d0e; }
+.badge-pas { background: #dbeafe; color: #1e40af; }
+.input-score.error {
+  border: 2px solid var(--danger) !important;
+  background-color: #fff1f2;
+}
+/* Secara default tetap tampil */
+.tab { display: block; }
+
+/* Sembunyikan Tab Khusus Admin */
+body.role-user .tab[data-tab="DAFTAR_SANTRI"],
+body.role-user .tab[data-tab="DAFTAR_MAPEL"],
+body.role-user .tab[data-tab="DAFTAR_GURU"],
+body.role-user .tab[data-tab="REKAP_SISWA"] {
+  display: none;
+}
+
+/* Sembunyikan Panel Kanan (Tabel Transaksi) untuk User */
+body.role-user .grid {
+  grid-template-columns: 1fr; /* Ubah grid menjadi 1 kolom penuh */
+}
+
+body.role-user .grid > .panel:nth-child(2) {
+  display: none; /* Sembunyikan panel kedua (tabel transaksi) */
+}
+/* =========================
+   TOAST NOTIFICATION
+========================= */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  min-width: 280px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #333;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  border-left: 6px solid var(--primary);
+  transform: translateX(120%);
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.toast.show {
+  transform: translateX(0);
+}
+
+.toast-icon {
+  margin-right: 12px;
+  font-size: 20px;
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.toast-content {
+  flex: 1;
+}
+
+.toast-title {
+  font-weight: 700;
+  font-size: 14px;
+  display: block;
+}
+
+.toast-msg {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Variasi Sukses */
+.toast.success { border-left-color: #22c55e; }
+.toast.success .toast-icon { background: #dcfce7; color: #166534; }
+/* =========================
+   SUMMARY MODAL & STATS
+========================= */
+.summary-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.stat-box {
+  padding: 12px;
+  border-radius: 12px;
+  text-align: center;
+}
+.stat-box.success { background: #dcfce7; color: #166534; }
+.stat-box.danger { background: #fee2e2; color: #991b1b; }
+
+.remedial-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 10px;
+}
+.remedial-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dashed #eee;
+  font-size: 13px;
+}
+/* =========================
+   CUSTOM SELECT STYLING
+========================= */
+select {
+  appearance: none; /* Menghilangkan panah default browser */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d=' immigration 19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  
+  padding: 12px 40px 12px 12px;
+  font-size: 14px;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Efek saat Select di-Klik/Fokus */
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.15);
+  transform: translateY(-1px);
+}
+
+/* Gaya untuk Option di dalam Select */
+select option {
+  padding: 10px;
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
+/* Animasi khusus saat panel input dirender */
+#mainPanel select {
+  animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Label Styling agar lebih Profesional */
+#mainPanel label {
+  font-weight: 600;
+  color: #475569;
+  margin-top: 12px;
+  margin-left: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 11px;
+}
+.input-score.error {
+  border: 2px solid #ef4444 !important;
+  background-color: #fef2f2;
+  animation: shake 0.2s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <h1>Aplikasi Input Nilai</h1>
+    <h1>Aplikasi Input Nilai — UH / PTS / PAS</h1>
     <div class="auth-area">
-      <div id="userLabel">Memuat...</div>
-      <button class="btn small" id="btnLogin">Login (Google)</button>
+      <div id="userLabel">Offline</div>
+      <button class="btn small" id="btnLogin">Masukkan PIN Akses</button>
       <button class="btn small ghost" id="btnLogout" style="display:none">Logout</button>
     </div>
   </header>
 
-  <div id="loginPrompt" style="text-align:center; margin-top:100px; display:none;">
-    <div class="card" style="max-width: 400px; margin: auto;">
-      <h2>Selamat Datang</h2>
-      <p>Silakan login untuk mengakses sistem input nilai.</p>
+  <div class="card">
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-tab="UH">INPUT UH</div>
+      <div class="tab" data-tab="PTS">INPUT PTS</div>
+      <div class="tab" data-tab="PAS">INPUT PAS</div>
+      <div class="tab" data-tab="DAFTAR_SANTRI">DAFTAR SANTRI</div>
+      <div class="tab" data-tab="DAFTAR_MAPEL">DAFTAR MAPEL</div>
+      <div class="tab" data-tab="DAFTAR_GURU">DAFTAR GURU</div>
+      <div class="tab" data-tab="REKAP_SISWA">REKAP PERSISWA</div>
+    </div>
+
+    <div class="grid">
+      <div class="panel" id="mainPanel"></div>
+
+
+      <!-- PANEL TABEL -->
+      <div class="panel" style="overflow:auto;">
+        <h3 style="margin-top:0">Tabel Transaksi Nilai</h3>
+        <div id="transactionsFilter"></div>
+        <div class="transactions card" id="transactionsPanel"></div>
+        <div class="footer-note">Data transaksi berisi semua nilai UH, PTS, PAS. Bisa edit/hapus. Disimpan di Firestore.</div>
+      </div>
     </div>
   </div>
 
-  <div id="mainContent" style="display:none;">
-    <div class="card">
-      <div class="tabs" id="tabs">
-        <div class="tab active" data-tab="UH">INPUT UH</div>
-        <div class="tab" data-tab="PTS">INPUT PTS</div>
-        <div class="tab" data-tab="PAS">INPUT PAS</div>
-        <div class="tab" data-tab="DAFTAR_SANTRI">DAFTAR SANTRI</div>
-        <div class="tab" data-tab="DAFTAR_MAPEL">DAFTAR MAPEL</div>
-        <div class="tab" data-tab="DAFTAR_GURU">DAFTAR GURU</div>
-        <div class="tab" data-tab="REKAP_SISWA">REKAP PERSISWA</div>
-      </div>
-
-      <div class="grid">
-        <div class="panel" id="mainPanel"></div>
-        <div class="panel" style="overflow:auto;">
-          <h3 style="margin-top:0">Tabel Transaksi Nilai</h3>
-          <div id="transactionsFilter"></div>
-          <div class="transactions card" id="transactionsPanel"></div>
-        </div>
-      </div>
-    </div>
-    
-    <div style="height:18px"></div>
-    <div style="color:var(--muted);font-size:13px">
-      Tips: Gunakan tab <strong>DAFTAR SANTRI</strong> untuk custom data.
-    </div>
+  <div style="height:18px"></div>
+  <div style="color:var(--muted);font-size:13px">
+    Tips: Gunakan tab <strong>DAFTAR SANTRI</strong> dan <strong>DAFTAR MAPEL</strong> untuk meng-custom nama santri & mapel. Perubahan langsung mempengaruhi dropdown dan daftar di tab nilai.
   </div>
 </div>
 
+<!-- Modal Preview Nilai -->
 <div id="previewModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:9999;">
   <div style="background:#fff;padding:16px;border-radius:12px;max-width:90%;max-height:80%;overflow:auto;position:relative;">
     <button id="closePreview" style="position:absolute;top:8px;right:8px;padding:4px 8px;border:none;background:#f00;color:#fff;border-radius:6px;cursor:pointer;">✕</button>
     <div id="previewContent"></div>
   </div>
 </div>
-
+<div id="toast-container"></div>
+<!-- SheetJS for Excel parsing -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script type="module">
+let currentPage = 1;
+const rowsPerPage = 10; // Jumlah data per halaman
+// ====== FIREBASE INIT ======
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getFirestore, collection, doc, addDoc, getDocs, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, writeBatch, where } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { getFirestore, collection, doc, addDoc, getDocs, updateDoc, deleteDoc, 
+  onSnapshot, query, orderBy, serverTimestamp, writeBatch, where 
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyB_HRFzuIj5WeOF_a3yY0vOvx3jQNjS4EY",
-  authDomain: "input-nilai-online-2-e50d4.firebaseapp.com",
-  projectId: "input-nilai-online-2-e50d4",
-  storageBucket: "input-nilai-online-2-e50d4.firebasestorage.app",
-  messagingSenderId: "110769709524",
-  appId: "1:110769709524:web:cda4fb84e99e519de6b641"
+  apiKey: "AIzaSyC_5sI9JYaR-bbGWBQFvfl2SX1xe2WRPuE",
+  authDomain: "input-nilai-online-c4657.firebaseapp.com",
+  projectId: "input-nilai-online-c4657",
+  storageBucket: "input-nilai-online-c4657.firebasestorage.app",
+  messagingSenderId: "676655325666",
+  appId: "1:676655325666:web:0db190cedc613a165199bb",
+  measurementId: "G-XYMHEHR27B"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth();
-const googleProvider = new GoogleAuthProvider();
 
-// DOM Elements
+const santriCol = collection(db,'santri');
+const mapelCol  = collection(db,'mapel');
+const nilaiCol  = collection(db,'nilai');
+const guruCol = collection(db, 'guru');
+let guruCache = [];
+
+// ====== CONFIGURASI AKSES ======
+const PIN_USER  = "1234";  // PIN untuk penginput nilai
+const PIN_ADMIN = "555";  // PIN untuk manajemen (Ganti sesuai keinginan)
+
+// ==========================================
+// 1. STATE & GLOBAL INITIALIZATION
+// ==========================================
+let userRole = null; 
+let isAuthorized = false;
+
+// Daftarkan ke window agar bisa diakses dari HTML (jika diperlukan)
+window.loginAkses = loginAkses;
+window.logoutAkses = logoutAkses;
+
+// ==========================================
+// 2. FUNGSI UPDATE UI (TOMBOL LOGOUT)
+// ==========================================
+function updateUIAfterLogin() {
+    const btnLoginEl = document.getElementById('btnLogin');
+    const btnLogoutEl = document.getElementById('btnLogout');
+    const userLabel = document.getElementById('userLabel');
+
+    if (isAuthorized) {
+        // Jika login berhasil
+        if (btnLoginEl) btnLoginEl.style.display = "none";
+        if (btnLogoutEl) btnLogoutEl.style.display = "inline-flex";
+        userLabel.innerText = userRole === 'ADMIN' ? "Mode: Admin" : "Mode: Penginput";
+    } else {
+        // Jika logout
+        if (btnLoginEl) btnLoginEl.style.display = "inline-flex";
+        if (btnLogoutEl) btnLogoutEl.style.display = "none";
+        userLabel.innerText = "Offline / Terkunci";
+        document.body.classList.remove('role-user');
+    }
+}
+
+// ==========================================
+// 3. FUNGSI LOGIN
+// ==========================================
+async function loginAkses() {
+    const inputPin = prompt("Masukkan PIN Akses:");
+    
+    if (inputPin === PIN_ADMIN) {
+        isAuthorized = true;
+        userRole = 'ADMIN';
+        document.body.classList.remove('role-user');
+        activeTab = 'DAFTAR_SANTRI'; // Admin langsung ke manajemen data
+    } else if (inputPin === PIN_USER) {
+        isAuthorized = true;
+        userRole = 'USER';
+        document.body.classList.add('role-user');
+        activeTab = 'UH'; // User langsung ke input nilai
+    } else {
+        alert("PIN Salah! Akses Ditolak.");
+        return;
+    }
+
+    // Eksekusi perubahan tampilan
+    updateUIAfterLogin();
+    renderActiveTab();
+    
+    if (typeof showToast === 'function') {
+        showToast("Berhasil", `Selamat Datang, ${userRole}`, "success");
+    }
+}
+
+// ==========================================
+// 4. FUNGSI LOGOUT
+// ==========================================
+function logoutAkses() {
+    if (confirm("Apakah Anda yakin ingin logout?")) {
+        // Reset Status
+        isAuthorized = false;
+        userRole = null;
+        
+        // Update UI & Kembali ke tampilan terkunci
+        updateUIAfterLogin();
+        renderActiveTab();
+        
+        if (typeof showToast === 'function') {
+            showToast("Logout", "Anda telah keluar dari sistem.", "success");
+        }
+    }
+}
+
+// ==========================================
+// 5. EVENT LISTENERS (Diletakkan di akhir module)
+// ==========================================
+// Menghubungkan tombol HTML dengan fungsi JavaScript di atas
+document.addEventListener('DOMContentLoaded', () => {
+    const btnLogin = document.getElementById('btnLogin');
+    const btnLogout = document.getElementById('btnLogout');
+
+    if (btnLogin) {
+        btnLogin.addEventListener('click', loginAkses);
+    }
+    
+    if (btnLogout) {
+        btnLogout.addEventListener('click', logoutAkses);
+    }
+});
+
+
+// ====== DOM ======
 const mainPanel = document.getElementById('mainPanel');
 const transactionsPanel = document.getElementById('transactionsPanel');
+const transactionsFilter = document.getElementById('transactionsFilter');
 const userLabel = document.getElementById('userLabel');
 const btnLogin = document.getElementById('btnLogin');
 const btnLogout = document.getElementById('btnLogout');
-const mainContent = document.getElementById('mainContent');
-const loginPrompt = document.getElementById('loginPrompt');
 
 let activeTab = 'UH';
 let santriCache = [];
 let mapelCache = [];
-let guruCache = [];
 
-// ===============================
-// === 1. AUTH LOGIC (GATEKEEPER) ===
-// ===============================
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    userLabel.innerText = "Halo, " + user.displayName.split(' ')[0];
-    btnLogin.style.display = 'none';
-    btnLogout.style.display = 'block';
-    mainContent.style.display = 'block';
-    loginPrompt.style.display = 'none';
-    
-    initRealtimeData(); // Jalankan sync data jika login
-  } else {
-    userLabel.innerText = "Offline";
-    btnLogin.style.display = 'block';
-    btnLogout.style.display = 'none';
-    mainContent.style.display = 'none';
-    loginPrompt.style.display = 'block';
+// ====== HELPERS ======
+function escapeHtml(str){ if(!str) return ''; return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
+function fmtDate(ts){
+  try{ if(!ts) return ''; if(ts.toDate) return ts.toDate().toLocaleString(); return String(ts); }catch(e){ return ''; }
+}
+
+
+async function hapusDuplikatSantri(){
+  const map = {};
+  const batch = writeBatch(db);
+
+  santriCache.forEach(s=>{
+    if(!s.nisn) return;
+    if(map[s.nisn]){
+      batch.delete(doc(db,'santri',s.id));
+    } else {
+      map[s.nisn] = true;
+    }
+  });
+
+  await batch.commit();
+  alert('Duplikat santri berhasil dibersihkan');
+}
+
+
+// ====== REALTIME SNAPSHOTS ======
+onSnapshot(query(santriCol, orderBy('name')), snap=>{
+  santriCache = snap.docs.map(d=>({id:d.id, ...d.data()}));
+
+  // 🔥 RESET filter santri jika sudah kosong
+  const santriSelect = document.getElementById('filterSantri');
+  if(santriSelect){
+    santriSelect.innerHTML = '<option value="">Semua Santri</option>';
+  }
+
+  renderActiveTab();
+  renderTransactionsWith(window._latestTx || []);
+});
+
+onSnapshot(query(mapelCol, orderBy('name')), snap=>{
+  mapelCache = snap.docs.map(d=>({id:d.id, ...d.data()}));
+  renderActiveTab();
+  renderTransactionsWith(window._latestTx || []);
+});
+onSnapshot(query(nilaiCol, orderBy('createdAt','desc')), snap=>{
+  window._latestTx = snap.docs.map(d=>({id:d.id, ...d.data()}));
+  
+  // HANYA jalankan render transaksi jika yang login adalah ADMIN
+  if(userRole === 'ADMIN') {
+    renderTransactionsWith(window._latestTx);
+  }
+  
+  if(activeTab === 'REKAP_SISWA' && userRole === 'ADMIN') renderRekapSiswa();
+});
+onSnapshot(query(guruCol, orderBy('name')), snap => {
+  guruCache = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+
+  // hanya render ulang jika tab guru sedang aktif
+  if (activeTab === 'DAFTAR_GURU') {
+    renderGuruEditor();
   }
 });
 
-btnLogin.onclick = () => signInWithPopup(auth, googleProvider).catch(e => alert(e.message));
-btnLogout.onclick = () => signOut(auth).then(() => location.reload());
 
-// ===============================
-// === 2. DATA SYNC LOGIC ===
-// ===============================
-function initRealtimeData() {
-  onSnapshot(query(collection(db,'santri'), orderBy('name')), snap=>{
-    santriCache = snap.docs.map(d=>({id:d.id, ...d.data()}));
-    renderActiveTab();
-  });
-
-  onSnapshot(query(collection(db,'mapel'), orderBy('name')), snap=>{
-    mapelCache = snap.docs.map(d=>({id:d.id, ...d.data()}));
-    renderActiveTab();
-  });
-
-  onSnapshot(query(collection(db,'nilai'), orderBy('createdAt','desc')), snap=>{
-    const list = snap.docs.map(d=>({id:d.id, ...d.data()}));
-    renderTransactions(list);
-  });
-}
-
-document.querySelectorAll('.tab').forEach(t=> t.onclick = ()=>{
+// ====== TABS ======
+document.querySelectorAll('.tab').forEach(t=> t.addEventListener('click', ()=>{
   activeTab = t.dataset.tab;
-  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
-  t.classList.add('active');
   renderActiveTab();
-});
+}));
 
-function renderActiveTab() {
-  if(['UH','PTS','PAS'].includes(activeTab)) renderInputPage();
-  else if(activeTab === 'DAFTAR_MAPEL') mainPanel.innerHTML = "<h3>Daftar Mapel</h3>";
-  else if(activeTab === 'DAFTAR_SANTRI') mainPanel.innerHTML = "<h3>Daftar Santri</h3>";
-  // Tambahkan fungsi render lainnya milik Anda di sini
+
+function renderFilterUI() {
+  const filterArea = document.getElementById('transactionsFilter');
+  if (!filterArea) return;
+
+  // 1. Ambil nilai yang sedang dipilih saat ini agar tidak ter-reset saat render ulang
+  const currentSearch = document.getElementById('mainSearchSantri')?.value || "";
+  const currentKelas = document.getElementById('mainFilterKelas')?.value || "";
+  const currentMapel = document.getElementById('mainFilterMapel')?.value || "";
+  const currentType = document.getElementById('mainFilterType')?.value || "";
+
+  // 2. Ambil daftar kelas UNIK dari santriCache (Data Master)
+  // Ini menjamin filter kelas selalu muncul meskipun belum ada transaksi nilai
+  const daftarKelas = [...new Set(santriCache.map(s => s.kelas).filter(k => k))].sort();
+
+  filterArea.innerHTML = `
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+      <input type="text" id="mainSearchSantri" placeholder="Cari Nama Santri..." 
+        value="${escapeHtml(currentSearch)}" style="padding:10px; border-radius:8px; border:1px solid #ddd;">
+      
+      <select id="mainFilterKelas">
+        <option value="">Semua Kelas</option>
+        ${daftarKelas.map(k => `
+          <option value="${k}" ${currentKelas === k ? 'selected' : ''}>Kelas ${k}</option>
+        `).join('')}
+      </select>
+
+      <select id="mainFilterMapel">
+        <option value="">Semua Mapel</option>
+        ${mapelCache.map(m => `
+          <option value="${m.name}" ${currentMapel === m.name ? 'selected' : ''}>${m.name}</option>
+        `).join('')}
+      </select>
+
+      <select id="mainFilterType">
+        <option value="">Semua Tipe</option>
+        <option value="UH" ${currentType === 'UH' ? 'selected' : ''}>UH</option>
+        <option value="PTS" ${currentType === 'PTS' ? 'selected' : ''}>PTS</option>
+        <option value="PAS_LISAN" ${currentType === 'PAS_LISAN' ? 'selected' : ''}>PAS Lisan</option>
+        <option value="PAS_TULIS" ${currentType === 'PAS_TULIS' ? 'selected' : ''}>PAS Tulis</option>
+        <option value="PAS_PRAKTEK" ${currentType === 'PAS_PRAKTEK' ? 'selected' : ''}>PAS Praktek</option>
+      </select>
+    </div>
+    <div style="margin-bottom:15px;">
+      <button class="btn small ghost" onclick="window.exportToExcel()" style="width:100%; background:#22c55e; color:white; border:none; padding:12px;">
+        📗 DOWNLOAD REKAP EXCEL (.XLSX)
+      </button>
+    </div>
+  `;
+
+  // 3. Pasang kembali event listener untuk semua elemen filter
+  ['mainSearchSantri', 'mainFilterKelas', 'mainFilterMapel', 'mainFilterType'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      // Gunakan 'change' untuk select dan 'input' untuk search agar lebih responsif
+      const eventType = el.tagName === 'SELECT' ? 'change' : 'input';
+      el.addEventListener(eventType, () => {
+        currentPage = 1; 
+        renderTransactionsWith(window._latestTx || []);
+      });
+    }
+  });
 }
 
-// ====== INPUT TAB ======
-function renderInputPage() {
-  const mapelOptions = mapelCache.map(m=>`<option value="${m.name}">${m.name}</option>`).join('');
-  mainPanel.innerHTML = `
-    <h3>Input Nilai ${activeTab}</h3>
-    <label>Pilih Mapel</label>
-    <select id="selMapel" style="width:100%; padding:8px;">${mapelOptions}</select>
-    <div style="margin-top:15px;">
-      ${santriCache.map(s => `<div style="padding:8px; border-bottom:1px solid #eee;">${s.name} <input type="number" class="score-in" data-id="${s.id}" data-name="${s.name}" style="float:right; width:60px;"></div>`).join('')}
+
+function renderTransactionsWith(dataList) {
+  const panel = document.getElementById('transactionsPanel');
+  if (!isAuthorized || userRole !== 'ADMIN' || !panel) {
+    if (panel) panel.innerHTML = "";
+    return;
+  }
+
+  // 1. Ambil Nilai Filter (TAMBAHKAN fKelas DI SINI)
+  const search = document.getElementById('mainSearchSantri')?.value.toLowerCase() || "";
+  const fKelas = document.getElementById('mainFilterKelas')?.value || ""; // Ambil nilai kelas
+  const fMapel = document.getElementById('mainFilterMapel')?.value || "";
+  const fType = document.getElementById('mainFilterType')?.value || "";
+
+  // 2. Logika Filter Data (TAMBAHKAN matchKelas)
+  const filtered = dataList.filter(d => {
+    const matchName = (d.santriName || "").toLowerCase().includes(search);
+    const matchMapel = (fMapel === "" || d.mapel === fMapel);
+    const matchType = (fType === "" || d.type === fType);
+    const matchKelas = (fKelas === "" || d.kelas === fKelas); // Logika filter kelas
+
+    // Pastikan matchKelas dimasukkan ke dalam return di bawah ini
+    return matchName && matchMapel && matchType && matchKelas; 
+  });
+
+  // 3. Logika Paginasi
+  const totalPages = Math.ceil(filtered.length / rowsPerPage);
+  if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+  
+  const start = (currentPage - 1) * rowsPerPage;
+  const end = start + rowsPerPage;
+  const paginatedData = filtered.slice(start, end);
+
+  // 4. Render HTML
+  let html = `
+    <div style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+        <span class="badge">${filtered.length} Total Data</span>
+        <button class="btn small delete-all" id="btnHapusSemua">HAPUS SEMUA</button>
     </div>
-    <button class="btn" id="btnSave" style="width:100%; margin-top:20px;">SIMPAN</button>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Santri</th>
+            <th>Kelas</th>
+            <th>Mapel</th>
+            <th>Guru</th>
+            <th>Tipe</th>
+            <th>Nilai</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${paginatedData.map(d => {
+            // Logika warna nilai (Remidial vs Lulus)
+            const kkm = d.kkm || 70;
+            const scoreColor = d.score < kkm ? '#ef4444' : '#22c55e';
+            
+            return `
+            <tr>
+              <td data-label="Santri">${escapeHtml(d.santriName)}</td>
+              <td data-label="Kelas"><span class="badge">${escapeHtml(d.kelas || '-')}</span></td>
+              <td data-label="Mapel">${escapeHtml(d.mapel)}</td>
+              <td data-label="Guru">${escapeHtml(d.guru || '-')}</td>
+              <td data-label="Tipe"><span class="badge badge-${d.type.toLowerCase()}">${d.type}</span></td>
+              <td data-label="Nilai">
+                <strong style="color: ${scoreColor}">${d.score}</strong>
+                <small style="color:#94a3b8; font-size:10px;">(KKM: ${kkm})</small>
+              </td>
+              <td data-label="Aksi">
+                <button class="btn small edit" onclick="window.editSingleNilai('${d.id}', ${d.score})">Edit</button>
+                <button class="btn small delete" onclick="window.deleteSingleNilai('${d.id}')">Hapus</button>
+              </td>
+            </tr>
+          `}).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:15px; display:flex; justify-content:center; gap:10px; align-items:center;">
+      <button class="btn small ghost" ${currentPage === 1 ? 'disabled' : ''} id="prevPage">Prev</button>
+      <span style="font-size:13px; font-weight:bold;">Halaman ${currentPage} dari ${totalPages || 1}</span>
+      <button class="btn small ghost" ${currentPage >= totalPages ? 'disabled' : ''} id="nextPage">Next</button>
+    </div>
   `;
   
-  document.getElementById('btnSave').onclick = async () => {
-    const mapel = document.getElementById('selMapel').value;
-    const inputs = document.querySelectorAll('.score-in');
-    for(let i of inputs) {
-      if(i.value) {
-        await addDoc(collection(db, 'nilai'), {
-          santriId: i.dataset.id,
-          santriName: i.dataset.name,
-          mapel: mapel,
-          score: Number(i.value),
-          type: activeTab,
-          createdAt: serverTimestamp()
-        });
-      }
+  panel.innerHTML = html;
+
+  // 5. Event Listeners
+  const btnHapus = document.getElementById('btnHapusSemua');
+  if (btnHapus) btnHapus.onclick = hapusSemuaNilai;
+
+  document.getElementById('prevPage').onclick = () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderTransactionsWith(window._latestTx);
     }
-    alert('Tersimpan!');
+  };
+
+  document.getElementById('nextPage').onclick = () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderTransactionsWith(window._latestTx);
+    }
   };
 }
 
-function renderTransactions(data) {
-  transactionsPanel.innerHTML = data.slice(0,10).map(d => `<div>${d.santriName} - ${d.score} (${d.type})</div>`).join('');
+
+function renderActiveTab() {
+  const userLabel = document.getElementById('userLabel');
+  // Tambahkan baris ini di awal fungsi:
+  mainPanel.style.animation = 'none';
+  mainPanel.offsetHeight; // Trik "reflow" agar browser sadar animasi di-reset
+  mainPanel.style.animation = null;
+  const tabsElement = document.querySelectorAll('.tab');
+  
+  // 1. CEK OTORISASI UMUM
+  if (!isAuthorized) {
+    userLabel.innerText = "Terkunci";
+    mainPanel.innerHTML = `<div style="text-align:center; padding:40px;"><h3>Akses Dibatasi</h3></div>`;
+    transactionsPanel.innerHTML = ""; // Kosongkan tabel jika belum login
+    transactionsFilter.innerHTML = ""; // Kosongkan filter jika belum login
+    return;
+  }
+
+  userLabel.innerText = userRole === 'ADMIN' ? "Mode: Admin" : "Mode: Penginput";
+  
+  // 2. LOGIKA RENDER PANEL UTAMA (Sisi Kiri)
+  const adminTabs = ['DAFTAR_SANTRI', 'DAFTAR_MAPEL', 'DAFTAR_GURU', 'REKAP_SISWA'];
+  if (userRole === 'USER' && adminTabs.includes(activeTab)) {
+    mainPanel.innerHTML = `<div class="card" style="text-align:center; color:red; padding:20px;"><h4>Akses Ditolak!</h4></div>`;
+  } else {
+    // Jalankan render tab yang dipilih
+    if (['UH', 'PTS', 'PAS'].includes(activeTab)) renderInputTab(activeTab);
+    else if (activeTab === 'DAFTAR_SANTRI') renderSantriEditor();
+    else if (activeTab === 'DAFTAR_MAPEL') renderMapelEditor();
+    else if (activeTab === 'DAFTAR_GURU') renderGuruEditor();
+    else if (activeTab === 'REKAP_SISWA') renderRekapSiswa();
+  }
+
+  // 3. LOGIKA TABEL TRANSAKSI (Sisi Kanan) - INI KUNCINYA
+  if (userRole === 'ADMIN') {
+    // Tampilkan filter dan tabel hanya untuk ADMIN
+    renderFilterUI(); 
+    renderTransactionsWith(window._latestTx || []);
+  } else {
+    // Jika role adalah USER, paksa panel kanan kosong atau beri pesan
+    document.getElementById('transactionsFilter').innerHTML = ""; 
+    transactionsPanel.innerHTML = `
+      <div style="text-align:center; padding:20px; color:#999;">
+        <p>Riwayat transaksi hanya dapat dilihat oleh Admin.</p>
+        <div style="font-size:40px">🚫</div>
+      </div>`;
+  }
+
+  tabsElement.forEach(t => t.classList.toggle('active', t.dataset.tab === activeTab));
 }
 
-async function saveScores(type){
+
+// ====== INPUT TAB ======
+function renderInputTab(type) {
+  // 1. Siapkan opsi Guru
+  const guruOptions = guruCache.length
+    ? `<option value="">-- Pilih Guru --</option>` + 
+      guruCache.map(g => `<option value="${escapeHtml(g.name)}" data-mapel="${escapeHtml(g.mapel || '')}">${escapeHtml(g.name)}</option>`).join('')
+    : '<option value="">-- kosong --</option>';
+
+  // 2. Siapkan opsi Mapel
+  const mapelOptions = mapelCache.length 
+    ? `<option value="">-- Pilih Mapel --</option>` + 
+      mapelCache.map(m => `<option value="${escapeHtml(m.name)}">${escapeHtml(m.name)}</option>`).join('') 
+    : '<option value="">-- kosong --</option>';
+
+  const daftarKelas = [...new Set(santriCache.map(s => s.kelas || "Tanpa Kelas"))].sort();
+
+  mainPanel.innerHTML = `
+    <h3>Input Nilai — ${type}</h3>
+
+    ${type === 'PAS' ? `
+      <label>Jenis PAS</label>
+      <select id="selectJenisPAS">
+        <option value="">-- Pilih Jenis PAS --</option>
+        <option value="PAS_LISAN">PAS Lisan</option>
+        <option value="PAS_TULIS">PAS Tulis</option>
+        <option value="PAS_PRAKTEK">PAS Praktek</option>
+      </select>
+    ` : ''}
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div>
+            <label>Pilih Guru Pengampu</label>
+            <select id="selectGuru">${guruOptions}</select>
+        </div>
+        <div>
+            <label>Pilih Mapel</label>
+            <select id="selectMapel">${mapelOptions}</select>
+        </div>
+    </div>
+
+    <div style="margin-top:15px; background: #f0f4f8; padding: 12px; border-radius: 8px;">
+      <label>🎯 Filter Kelas</label>
+      <select id="filterKelasInput">
+        <option value="SEMUA">-- Tampilkan Semua Kelas --</option>
+        ${daftarKelas.map(k => `<option value="${k}">Kelas ${k}</option>`).join('')}
+      </select>
+      
+      <label style="margin-top:10px;">🔍 Cari Nama Santri</label>
+      <input type="text" id="quickSearchSantri" placeholder="Ketik nama santri...">
+    </div>
+
+    <div style="margin-top:10px" class="santri-list" id="santriList">
+      ${santriCache.map(s => `
+        <div class="santri-row" data-id="${s.id}" data-kelas="${s.kelas || 'Tanpa Kelas'}" style="display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee;">
+          <div style="flex:1">
+            <strong class="santri-name">${escapeHtml(s.name)}</strong><br>
+            <small style="color:#666">Kelas: ${escapeHtml(s.kelas || '-')}</small>
+          </div>
+          <div style="width:80px">
+            <input type="number" 
+                   class="input-score" 
+                   data-id="${s.id}" 
+                   placeholder="0-100" 
+                   min="0" 
+                   max="100" 
+                   oninput="if(this.value > 100) this.value = 100; if(this.value < 0) this.value = 0;"
+                   style="width:100%; padding:8px; border-radius:8px; border:1px solid #ddd;">
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div style="margin-top:20px; display:flex; gap:10px;">
+      <button class="btn" id="btnSimpan" style="flex:1; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer;">SIMPAN NILAI</button>
+    </div>
+  `;
+
+  // --- LOGIKA FILTER KELAS & SEARCH ---
+  const doFilter = () => {
+    const kelasTerpilih = document.getElementById('filterKelasInput').value;
+    const kataKunci = document.getElementById('quickSearchSantri').value.toLowerCase();
+    
+    document.querySelectorAll('.santri-row').forEach(row => {
+      const kelasSantri = row.dataset.kelas;
+      // Perbaikan: Pastikan class .santri-name ada di HTML di atas
+      const namaSantri = row.querySelector('.santri-name').innerText.toLowerCase();
+      
+      const matchKelas = (kelasTerpilih === "SEMUA" || kelasSantri === kelasTerpilih);
+      const matchNama = namaSantri.includes(kataKunci);
+      
+      row.style.display = (matchKelas && matchNama) ? 'flex' : 'none';
+    });
+  };
+
+  document.getElementById('filterKelasInput').addEventListener('change', doFilter);
+  document.getElementById('quickSearchSantri').addEventListener('input', doFilter);
+
+  // --- LOGIKA AUTO-NEXT (ENTER) ---
+  const scoreInputs = mainPanel.querySelectorAll('.input-score');
+  scoreInputs.forEach((input, index) => {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        
+        // Cari input selanjutnya yang sedang terlihat (tidak tersembunyi oleh filter)
+        let nextInput = null;
+        for (let i = index + 1; i < scoreInputs.length; i++) {
+          if (scoreInputs[i].closest('.santri-row').style.display !== 'none') {
+            nextInput = scoreInputs[i];
+            break;
+          }
+        }
+
+        if (nextInput) {
+          nextInput.focus();
+          nextInput.select();
+        } else {
+          if (confirm("Sudah mencapai baris terakhir. Simpan sekarang?")) {
+            document.getElementById('btnSimpan').click();
+          }
+        }
+      }
+    });
+  });
+
+  // --- LOGIKA OTOMATISASI MAPEL ---
+  const selGuru = document.getElementById('selectGuru');
+  const selMapel = document.getElementById('selectMapel');
+  selGuru.addEventListener('change', () => {
+    const selectedOption = selGuru.options[selGuru.selectedIndex];
+    const mapelDiampu = selectedOption.getAttribute('data-mapel');
+    if (mapelDiampu) selMapel.value = mapelDiampu;
+  });
+
+  // --- LOGIKA SIMPAN ---
+  document.getElementById('btnSimpan').onclick = () => prosesSimpanNilai(type);
+}
+
+async function prosesSimpanNilai(type) {
+  const btn = document.getElementById('btnSimpan');
+  const guru = document.getElementById('selectGuru').value;
   const mapel = document.getElementById('selectMapel').value;
-  if(!mapel) return alert('Pilih mapel terlebih dahulu');
+  const finalType = (type === 'PAS') ? document.getElementById('selectJenisPAS').value : type;
 
-  let finalType = type;
-
-  if(type === 'PAS'){
-    const jenisPAS = document.getElementById('selectJenisPAS').value;
-    if(!jenisPAS) return alert('Pilih jenis PAS terlebih dahulu');
-    finalType = jenisPAS; // PAS_LISAN / PAS_TULIS / PAS_PRAKTEK
+  if (!guru || !mapel || !finalType) {
+    alert("⚠️ Lengkapi data Guru, Mapel, dan Jenis Nilai!");
+    return;
   }
 
   const inputs = document.querySelectorAll('.input-score');
-  let saved = 0;
+  const batch = writeBatch(db);
+  let count = 0;
 
-  for(const input of inputs){
-    const val = input.value.trim();
-    if(val === '') continue;
+  btn.disabled = true;
+  btn.innerText = "⏳ Menyimpan...";
 
-    const num = Number(val);
-    if(isNaN(num)) continue;
+  inputs.forEach(inp => {
+    const val = inp.value;
+    if (val !== "") {
+      const sId = inp.dataset.id;
+      const sData = santriCache.find(s => s.id === sId);
+      const newDocRef = doc(collection(db, "nilai"));
+      
+      batch.set(newDocRef, {
+        santriId: sId,
+        santriName: sData.name,
+        kelas: sData.kelas || 'Tanpa Kelas',
+        type: finalType,
+        guru: guru,
+        mapel: mapel,
+        score: parseFloat(val),
+        createdAt: serverTimestamp()
+      });
+      count++;
+    }
+  });
 
-    const santri = santriCache.find(s=>s.id===input.dataset.id);
-    if(!santri) continue;
-
-    await addDoc(nilaiCol, {
-      type: finalType,
-      mapel,
-      santriId: santri.id,
-      santriName: santri.name,
-      score: num,
-      createdAt: serverTimestamp()
-    });
-    saved++;
+  if (count === 0) {
+    alert("Isi minimal satu nilai.");
+    btn.disabled = false;
+    btn.innerText = "SIMPAN NILAI";
+    return;
   }
 
-  alert(`${saved} nilai berhasil disimpan!`);
+  try {
+    await batch.commit();
+    alert(`✅ Berhasil menyimpan ${count} data!`);
+    inputs.forEach(i => i.value = "");
+  } catch (err) {
+    alert("❌ Gagal: " + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerText = "SIMPAN NILAI";
+  }
 }
+
+
+async function saveScores(type) {
+  const btnSimpan = document.getElementById('btnSimpan');
+  const originalText = btnSimpan.innerHTML;
+
+  const mapel = document.getElementById('selectMapel').value;
+  const guru = document.getElementById('selectGuru').value;
+  
+  // 1. Validasi Input Dasar
+  if (!mapel || !guru) return alert('Pilih Mapel dan Guru terlebih dahulu!');
+
+  let finalType = type;
+  if (type === 'PAS') {
+    const valJenis = document.getElementById('selectJenisPAS').value;
+    if (!valJenis) return alert('Pilih Jenis PAS!');
+    finalType = valJenis;
+  }
+
+  // AMBIL DATA KKM DARI CACHE MAPEL
+  const mapelData = mapelCache.find(m => m.name === mapel);
+  const kkmAktif = mapelData ? (mapelData.kkm || 70) : 70; // Default 70 jika data kkm kosong
+
+  const inputs = document.querySelectorAll('.input-score');
+  const batch = writeBatch(db);
+  let count = 0;
+  let hasError = false; 
+
+scoreInputs.forEach(inp => {
+  const val = inp.value.trim();
+  
+  if (val !== "") {
+    const numericValue = Number(val);
+
+    // VALIDASI: Cek apakah itu angka dan dalam rentang 0-100
+    if (isNaN(numericValue)) {
+       showToast("Input harus berupa angka!", "error");
+       inp.classList.add('error'); // Tambahkan visual merah
+       return;
+    }
+
+    if (numericValue < 0 || numericValue > 100) {
+       showToast("Nilai harus antara 0 - 100", "error");
+       inp.classList.add('error');
+       return;
+    }
+
+    // Jika lolos validasi, baru masukkan ke batch
+    const sId = inp.dataset.id;
+    const sObj = santriCache.find(x => x.id === sId);
+    const ref = doc(nilaiCol);
+    
+    batch.set(ref, {
+      santriId: sId,
+      santriName: sObj.name,
+      score: numericValue, // Simpan sebagai angka murni
+      // ... field lainnya
+    });
+    count++;
+  }
+});
+
+// 2. Proses Validasi Visual & Persiapan Data
+inputs.forEach(inp => {
+  const val = parseFloat(inp.value);
+  
+  if (!isNaN(val)) {
+    const santriId = inp.dataset.id;
+    
+    // CARI DATA SANTRI DI CACHE UNTUK AMBIL KELASNYA
+    const dataSantri = santriCache.find(s => s.id === santriId);
+    
+    const newDoc = doc(collection(db, 'nilai'));
+    
+    batch.set(newDoc, {
+      santriId: santriId,
+      santriName: dataSantri ? dataSantri.name : "Tanpa Nama",
+      
+      // INI YANG MEMBUAT KELAS MUNCUL DI TABEL TRANSAKSI
+      kelas: (dataSantri && dataSantri.kelas) ? dataSantri.kelas : "-", 
+      
+      mapel: mapel,
+      guru: guru,
+      type: typeValue,
+      score: val,
+      createdAt: serverTimestamp()
+    });
+    
+    count++;
+  } // <-- Tutup IF
+}); // <-- Tutup forEach
+
+  // 3. Batalkan jika ada error visual
+  if (hasError) {
+    alert(`Terdapat nilai tidak valid (0-100). Periksa kolom merah.`);
+    return; 
+  }
+
+  if (count === 0) {
+    return alert("Tidak ada nilai yang diisi.");
+  }
+
+  // 4. Proses Simpan ke Firestore
+  try {
+    // Loading State
+    btnSimpan.classList.add('btn-loading');
+    btnSimpan.disabled = true;
+    btnSimpan.innerHTML = `<span class="spinner"></span> Menyimpan...`;
+
+    await batch.commit();
+
+// 1. Siapkan data untuk ringkasan
+let remedialCount = 0;
+let lulusCount = 0;
+let remedialListHtml = "";
+
+inputs.forEach(input => {
+    if (input.value.trim() !== "") {
+        const score = Number(input.value);
+        const santri = santriCache.find(s => s.id === input.dataset.id);
+        
+        if (score < kkmAktif) {
+            remedialCount++;
+            remedialListHtml += `
+                <div class="remedial-item">
+                    <span>${santri.name}</span>
+                    <b style="color:#ef4444">${score}</b>
+                </div>`;
+        } else {
+            lulusCount++;
+        }
+    }
+});
+
+// 2. Munculkan Toast Sukses
+window.showToast("Berhasil Disimpan", `${count} data nilai berhasil diunggah.`);
+
+// 3. Munculkan Summary Modal
+const previewContent = document.getElementById('previewContent');
+previewContent.innerHTML = `
+    <div style="text-align:center; margin-bottom:15px;">
+        <div style="font-size:40px;">📊</div>
+        <h2 style="margin:5px 0">Ringkasan Input</h2>
+        <p style="color:var(--muted)">Mapel: ${mapel} (KKM: ${kkmAktif})</p>
+    </div>
+
+    <div class="summary-card">
+        <div class="stat-box success">
+            <small>Tuntas</small>
+            <div style="font-size:20px; font-weight:800">${lulusCount}</div>
+        </div>
+        <div class="stat-box danger">
+            <small>Remidial</small>
+            <div style="font-size:20px; font-weight:800">${remedialCount}</div>
+        </div>
+    </div>
+
+    ${remedialCount > 0 ? `
+        <label>Daftar Santri Remidial:</label>
+        <div class="remedial-list">${remedialListHtml}</div>
+    ` : `
+        <div style="text-align:center; padding:10px; color:#22c55e;">
+            🎉 Selamat! Semua santri tuntas KKM.
+        </div>
+    `}
+    
+    <button class="btn" onclick="document.getElementById('previewModal').style.display='none'" 
+            style="width:100%; margin-top:20px;">Selesai & Tutup</button>
+`;
+
+document.getElementById('previewModal').style.display = 'flex';
+
+// 4. Bersihkan input seperti biasa
+inputs.forEach(i => { i.value = ""; });
+
+    window.showToast("Berhasil Disimpan", `${count} data nilai ${type} telah masuk ke database.`, "success");
+    
+    // Bersihkan semua input
+    inputs.forEach(i => {
+      i.value = "";
+      i.style.border = "";
+      i.style.backgroundColor = "";
+    });
+
+  } catch (error) {
+    console.error("Error saat menyimpan:", error);
+    alert("Gagal menyimpan data. Periksa koneksi internet.");
+  } finally {
+    // Kembalikan Tombol
+    btnSimpan.classList.remove('btn-loading');
+    btnSimpan.disabled = false;
+    btnSimpan.innerHTML = originalText;
+  }
+}
+
+async function hapusSemuaNilai() {
+  if (userRole !== 'ADMIN') {
+    alert("Akses Ditolak! Hanya Admin yang dapat menghapus seluruh data transaksi.");
+    return;
+  }
+  const konfirmasi = confirm("PERINGATAN: Anda akan menghapus SELURUH data nilai di database...");
+  if (!konfirmasi) return;
+
+  const password = prompt("Masukkan PIN ADMIN untuk konfirmasi penghapusan massal:");
+  if (password !== PIN_ADMIN) {
+    alert("PIN Salah. Penghapusan dibatalkan.");
+    return;
+  }
+
+  const batch = writeBatch(db);
+  const snap = await getDocs(nilaiCol);
+  snap.forEach(d => batch.delete(d.ref));
+  await batch.commit();
+  alert("Seluruh data nilai telah dibersihkan.");
+}
+
+// Fungsi untuk Edit Nilai Tunggal
+window.editSingleNilai = async (id, oldScore) => {
+  // Proteksi tambahan di sisi kode
+  if (userRole !== 'ADMIN') {
+    alert("Hanya Admin yang boleh mengedit nilai.");
+    return;
+  }
+
+  const newScore = prompt(`Ubah nilai santri. (Nilai lama: ${oldScore})`, oldScore);
+
+  // Jika user klik 'Cancel' atau tidak mengisi apapun
+  if (newScore === null || newScore.trim() === "") return;
+
+  const scoreNum = Number(newScore);
+
+  // Validasi input angka
+  if (isNaN(scoreNum) || scoreNum < 0 || scoreNum > 100) {
+    alert("Gagal: Masukkan angka yang valid antara 0 - 100.");
+    return;
+  }
+
+  try {
+    const docRef = doc(db, 'nilai', id);
+    await updateDoc(docRef, {
+      score: scoreNum,
+      updatedAt: serverTimestamp() // Mencatat kapan nilai terakhir diubah
+    });
+    // Tidak perlu refresh, onSnapshot akan otomatis memperbarui tabel
+  } catch (error) {
+    console.error("Gagal update:", error);
+    alert("Terjadi kesalahan saat menyimpan perubahan.");
+  }
+};
+
+// Pastikan fungsi hapus tunggal juga tersedia di window agar bisa diklik dari HTML
+window.deleteSingleNilai = async (id) => {
+  if (userRole !== 'ADMIN') return alert("Hanya Admin yang boleh menghapus.");
+  if (!confirm("Apakah Anda yakin ingin menghapus data nilai ini?")) return;
+  
+  try {
+    await deleteDoc(doc(db, 'nilai', id));
+  } catch (e) {
+    alert("Gagal menghapus data.");
+  }
+};
+
+
+window.exportToExcel = () => {
+  // 1. Ambil data yang sedang terfilter (dari cache data terakhir)
+  const dataToExport = window._latestTx || [];
+  
+  if (dataToExport.length === 0) {
+    alert("Tidak ada data untuk di-export.");
+    return;
+  }
+
+  // 2. Format data agar rapi di Excel
+  const excelData = dataToExport.map((d, index) => ({
+    "No": index + 1,
+    "Nama Santri": d.santriName,
+    "Mata Pelajaran": d.mapel,
+    "Guru Pengampu": d.guru || "-",
+    "Tipe Nilai": d.type,
+    "Skor": d.score,
+    "Tanggal Input": d.createdAt ? d.createdAt.toDate().toLocaleString('id-ID') : "-"
+  }));
+
+  // 3. Proses konversi menggunakan SheetJS
+  const worksheet = XLSX.utils.json_to_sheet(excelData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Nilai");
+
+  // 4. Atur lebar kolom otomatis (opsional)
+  const wscols = [
+    {wch: 5},  // No
+    {wch: 25}, // Nama
+    {wch: 20}, // Mapel
+    {wch: 20}, // Guru
+    {wch: 15}, // Tipe
+    {wch: 10}, // Skor
+    {wch: 20}  // Tanggal
+  ];
+  worksheet['!cols'] = wscols;
+
+  // 5. Download file
+  const fileName = `Rekap_Nilai_${new Date().toISOString().slice(0,10)}.xlsx`;
+  XLSX.writeFile(workbook, fileName);
+};
 
 
 function showInteractivePreview(type){
@@ -369,182 +1773,248 @@ function showInteractivePreview(type){
   };
 }
 
+
 // ====== DAFTAR SANTRI =====
-function renderSantriEditor(){
+function renderSantriEditor() {
+  // 1. RENDER HTML KE PANEL UTAMA
   mainPanel.innerHTML = `
     <h3>Daftar Santri</h3>
     <hr style="margin:12px 0">
 
-<h4>Tambah Santri Manual</h4>
+    <h4>Tambah Santri Manual</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:end;margin-bottom:12px">
+      <div>
+        <label>Nama Santri</label>
+        <input type="text" id="newSantriName" placeholder="Nama santri">
+      </div>
+      <div>
+        <label>NISN</label>
+        <input type="text" id="newSantriNISN" placeholder="NISN">
+      </div>
+      <div>
+        <label>Kelas</label>
+        <select id="addKelas">
+          <option value="7">Kelas 7</option>
+          <option value="8">Kelas 8</option>
+          <option value="9">Kelas 9</option>
+          <option value="10">Kelas 10</option>
+          <option value="11">Kelas 11</option>
+          <option value="12">Kelas 12</option>
+        </select>
+      </div>
+      <button class="btn" id="btnSimpanSantri">TAMBAH</button>
+    </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:end;margin-bottom:12px">
-  <div>
-    <label>Nama Santri</label>
-    <input type="text" id="newSantriName" placeholder="Nama santri">
-  </div>
-  <div>
-    <label>Kelas</label>
-    <input type="text" id="newSantriKelas" placeholder="Kelas">
-  </div>
-  <div>
-    <label>NISN</label>
-    <input type="text" id="newSantriNISN" placeholder="NISN">
-  </div>
-  <div>
-    <button class="btn" id="btnAddSantri">Tambah</button>
-  </div>
-</div>
+    <hr style="margin:12px 0">
 
-<hr style="margin:12px 0">
+    <div style="background:#f1f5f9; padding:12px; border-radius:8px; margin-bottom:12px;">
+      <label style="font-weight:bold">Import dari Excel</label><br>
+      <input type="file" id="fileSantri" accept=".xlsx,.csv" style="margin:8px 0;" />
+      <div style="display:flex; gap:8px; align-items:center;">
+        <select id="sheetSelector" disabled style="width:200px; padding:6px;">
+          <option value="">-- Pilih Sheet --</option>
+        </select>
+        <button class="btn small" id="btnImportExcel">Import Sekarang</button>
+      </div>
+      <small style="color: #64748b;">Format kolom: <b>name | kelas | nisn</b> (Mulai baris ke-2)</small>
+    </div>
 
-    <input type="file" id="fileSantri" accept=".xlsx,.csv" style="margin-bottom:8px;" />
-    <button class="btn small" id="btnImportExcel">Import Excel</button>
-    <label>Pilih Sheet</label>
-    <select id="sheetSelector" disabled style="margin-bottom:8px;">
-    <option value="">-- Pilih Sheet --</option>
-    </select>
-    <button class="btn small ghost" id="btnDeleteSelected">Hapus Terpilih</button>
-    <table id="santriTable"><thead><tr><th><input type="checkbox" id="chkAllSantri"></th><th>Nama</th><th>Kelas</th><th>NISN</th><th>Aksi</th></tr></thead><tbody>${santriCache.map(s=>`<tr data-id="${s.id}"><td><input type="checkbox" class="chkSantri" data-id="${s.id}"></td><td><input class="editableName" value="${escapeHtml(s.name)}"></td><td><input class="editableKelas" value="${escapeHtml(s.kelas||'')}"></td><td><input class="editableNISN" value="${escapeHtml(s.nisn||'')}"></td><td><button class="btn small ghost btnRemoveSantri">Hapus</button></td></tr>`).join('')}</tbody></table>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <strong>Total: ${santriCache.length} Santri</strong>
+        <button class="btn small delete-all" id="btnDeleteSelected">Hapus Terpilih</button>
+    </div>
+
+    <div class="table-responsive">
+      <table id="santriTable">
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="chkAllSantri"></th>
+            <th>Nama</th>
+            <th>Kelas</th>
+            <th>NISN</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${santriCache.map(s => `
+            <tr data-id="${s.id}">
+              <td><input type="checkbox" class="chkSantri" data-id="${s.id}"></td>
+              <td><input class="editable-input editableName" value="${escapeHtml(s.name || '')}"></td>
+              <td><input class="editable-input editableKelas" value="${escapeHtml(s.kelas || '')}"></td>
+              <td><input class="editable-input editableNISN" value="${escapeHtml(s.nisn || '')}"></td>
+              <td><button class="btn small delete btnRemoveSantri">Hapus</button></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
   `;
 
-let santriWorkbook = null;
+  // --- 2. LOGIKA TAMBAH MANUAL ---
+  const btnSimpan = document.getElementById('btnSimpanSantri');
+  btnSimpan.onclick = async () => {
+    const nameEl = document.getElementById('newSantriName');
+    const nisnEl = document.getElementById('newSantriNISN');
+    const kelasEl = document.getElementById('addKelas');
 
-document.getElementById('fileSantri').addEventListener('change', async (e)=>{
-  const file = e.target.files[0];
-  if(!file) return;
+    const name = nameEl.value.trim();
+    const nisn = nisnEl.value.trim();
+    const kelas = kelasEl.value;
 
-  const data = await file.arrayBuffer();
-  santriWorkbook = XLSX.read(data);
+    if (!name) return alert('Nama santri wajib diisi!');
 
-  const sheetSelector = document.getElementById('sheetSelector');
-  sheetSelector.innerHTML = '<option value="">-- Pilih Sheet --</option>';
+    // Cek duplikat NISN di cache lokal
+    if (nisn && santriCache.some(s => String(s.nisn) === nisn)) {
+      return alert('Gagal! NISN ' + nisn + ' sudah ada.');
+    }
 
-  santriWorkbook.SheetNames.forEach(name=>{
-    sheetSelector.innerHTML += `<option value="${name}">${name}</option>`;
-  });
+    btnSimpan.disabled = true;
+    btnSimpan.innerHTML = "...";
 
-  sheetSelector.disabled = false;
-});
+    try {
+      await addDoc(santriCol, {
+        name,
+        kelas,
+        nisn,
+        createdAt: serverTimestamp()
+      });
+      nameEl.value = '';
+      nisnEl.value = '';
+      alert('Santri berhasil ditambahkan');
+    } catch (e) {
+      alert("Error: " + e.message);
+    } finally {
+      btnSimpan.disabled = false;
+      btnSimpan.innerHTML = "TAMBAH";
+    }
+  };
 
-  // Import Excel
-document.getElementById('btnImportExcel').addEventListener('click', async()=>{
+  // --- 3. LOGIKA EXCEL (IMPORT) ---
   const fileInput = document.getElementById('fileSantri');
-  if(!fileInput.files.length) return alert('Pilih file!');
-  
-  const file = fileInput.files[0];
-  const data = await file.arrayBuffer();
-  const workbook = XLSX.read(data);
-  const sheetName = document.getElementById('sheetSelector').value;
-if(!sheetName) return alert('Pilih sheet terlebih dahulu');
+  const sheetSelector = document.getElementById('sheetSelector');
 
-  const worksheet = workbook.Sheets[sheetName];
-
-  const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-    header:["name","kelas","nisn"],
-    range:1
-  });
-
-  if(!jsonData.length) return alert('File kosong!');
-
-  // 🔑 ambil NISN yang sudah ada
-  const existingNISN = santriCache
-    .map(s => String(s.nisn || '').trim())
-    .filter(n => n);
-
-  const batch = writeBatch(db);
-  let added = 0;
-  let skipped = 0;
-
-  jsonData.forEach(r=>{
-    if(!r.name) return;
-
-    const nisn = String(r.nisn || '').trim();
-
-    // ⛔ CEK DUPLIKAT
-    if(nisn && existingNISN.includes(nisn)){
-      skipped++;
-      return;
+  fileInput.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data);
+      sheetSelector.innerHTML = '<option value="">-- Pilih Sheet --</option>';
+      workbook.SheetNames.forEach(name => {
+        sheetSelector.innerHTML += `<option value="${name}">${name}</option>`;
+      });
+      sheetSelector.disabled = false;
+      window._tempWorkbook = workbook; 
+    } catch (err) {
+      alert("Gagal membaca file excel.");
     }
+  };
 
-    batch.set(doc(santriCol),{
-      name: String(r.name).trim(),
-      kelas: r.kelas || '',
-      nisn: nisn || '',
-      createdAt: serverTimestamp()
-    });
-    added++;
-  });
+  document.getElementById('btnImportExcel').onclick = async () => {
+    const sheetName = sheetSelector.value;
+    const btnImport = document.getElementById('btnImportExcel');
 
-  if(added === 0){
-    alert(`Tidak ada data baru.\nDuplikat dilewati: ${skipped}`);
-    return;
-  }
+    if (!sheetName || !window._tempWorkbook) return alert('Pilih file dan sheet!');
 
-  await batch.commit();
-  alert(`Import selesai\nDitambahkan: ${added}\nDuplikat dilewati: ${skipped}`);
-  fileInput.value = '';
-});
+    const worksheet = window._tempWorkbook.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: ["name", "kelas", "nisn"], range: 1 });
 
-  // Hapus massal
-  document.getElementById('btnDeleteSelected').addEventListener('click', async()=>{
-    const checked = Array.from(document.querySelectorAll('.chkSantri')).filter(c=>c.checked);
-    if(!checked.length) return alert('Pilih minimal 1 santri');
-    if(!confirm(`Hapus ${checked.length} santri beserta semua nilai?`)) return;
+    const existingNISN = santriCache.map(s => String(s.nisn || '').trim());
     const batch = writeBatch(db);
-    for(const c of checked){
-      const id = c.dataset.id;
-      batch.delete(doc(santriCol,id));
-      const snap = await getDocs(query(nilaiCol,where('santriId','==',id)));
-      snap.forEach(d=>batch.delete(d.ref));
-    }
-    await batch.commit();
-    alert(`${checked.length} santri dihapus`);
-  });
-  document.getElementById('chkAllSantri').addEventListener('change', e=>{ const ch = e.target.checked; document.querySelectorAll('.chkSantri').forEach(c=>c.checked=ch); });
-  document.querySelectorAll('.btnRemoveSantri').forEach(btn=>{ btn.addEventListener('click', async e=>{
-    const tr = e.target.closest('tr'); const id = tr.dataset.id; if(!confirm('Hapus santri beserta nilai?')) return;
-    const batch = writeBatch(db); batch.delete(doc(santriCol,id));
-    const snap = await getDocs(query(nilaiCol,where('santriId','==',id))); snap.forEach(d=>batch.delete(d.ref));
-    await batch.commit(); alert('Santri dihapus');
-  });});
-  document.querySelectorAll('.editableName,.editableKelas,.editableNISN').forEach(input=>{ input.addEventListener('change', async e=>{
-    const tr = e.target.closest('tr'); const id = tr.dataset.id;
-    let field = e.target.classList.contains('editableName')?'name': e.target.classList.contains('editableKelas')?'kelas':'nisn';
-    await updateDoc(doc(santriCol,id),{[field]:e.target.value});
-  });});
+    let added = 0;
 
-document.getElementById('btnAddSantri').addEventListener('click', async () => {
-  const name  = document.getElementById('newSantriName').value.trim();
-  const kelas = document.getElementById('newSantriKelas').value.trim();
-  const nisn  = document.getElementById('newSantriNISN').value.trim();
+    btnImport.disabled = true;
+    btnImport.innerHTML = "Memproses...";
 
-  if(!name) return alert('Nama santri wajib diisi');
-
-  // 🔒 Cegah NISN duplikat
-  if(nisn && santriCache.some(s => String(s.nisn || '').trim() === nisn)){
-    return alert('NISN sudah terdaftar');
-  }
-
-  try{
-    await addDoc(santriCol, {
-      name,
-      kelas,
-      nisn,
-      createdAt: serverTimestamp()
+    jsonData.forEach(r => {
+      const nisn = String(r.nisn || '').trim();
+      const name = String(r.name || '').trim();
+      
+      if (name && (!nisn || !existingNISN.includes(nisn))) {
+        const newRef = doc(santriCol);
+        batch.set(newRef, {
+          name: name,
+          kelas: String(r.kelas || '').trim(),
+          nisn: nisn,
+          createdAt: serverTimestamp()
+        });
+        added++;
+      }
     });
 
-    document.getElementById('newSantriName').value = '';
-    document.getElementById('newSantriKelas').value = '';
-    document.getElementById('newSantriNISN').value = '';
+    if (added > 0) {
+      await batch.commit();
+      alert(`Berhasil mengimpor ${added} santri.`);
+      fileInput.value = ""; 
+      sheetSelector.disabled = true;
+    } else {
+      alert("Tidak ada data baru yang valid untuk diimpor.");
+    }
+    btnImport.disabled = false;
+    btnImport.innerHTML = "Import Sekarang";
+  };
 
-    alert('Santri berhasil ditambahkan');
-  }catch(err){
-    console.error(err);
-    alert('Gagal menambahkan santri');
-  }
-});
+  // --- 4. LOGIKA UPDATE OTOMATIS (IN-LINE EDIT) ---
+  document.querySelectorAll('.editable-input').forEach(input => {
+    input.onchange = async (e) => {
+      const tr = e.target.closest('tr');
+      const id = tr.dataset.id;
+      const field = e.target.classList.contains('editableName') ? 'name' : 
+                    e.target.classList.contains('editableKelas') ? 'kelas' : 'nisn';
+      
+      try {
+        await updateDoc(doc(db, 'santri', id), { 
+          [field]: e.target.value.trim() 
+        });
+        console.log(`Updated ${field} for ${id}`);
+      } catch (err) {
+        alert("Gagal memperbarui data.");
+        console.error(err);
+      }
+    };
+  });
 
+  // --- 5. LOGIKA HAPUS (SINGLE & MASSAL) ---
+  // Checkbox Select All
+  document.getElementById('chkAllSantri').onclick = (e) => {
+    document.querySelectorAll('.chkSantri').forEach(c => c.checked = e.target.checked);
+  };
+
+  // Hapus Terpilih (Batch Delete)
+  document.getElementById('btnDeleteSelected').onclick = async () => {
+    const checked = Array.from(document.querySelectorAll('.chkSantri:checked'));
+    if (!checked.length) return alert("Pilih data yang ingin dihapus!");
+    if (!confirm(`Hapus ${checked.length} santri terpilih?`)) return;
+
+    const batch = writeBatch(db);
+    checked.forEach(cb => {
+      batch.delete(doc(db, 'santri', cb.dataset.id));
+    });
+    
+    try {
+      await batch.commit();
+      alert("Data berhasil dihapus.");
+    } catch (err) {
+      alert("Gagal menghapus data terpilih.");
+    }
+  };
+
+  // Hapus Satuan
+  document.querySelectorAll('.btnRemoveSantri').forEach(btn => {
+    btn.onclick = async (e) => {
+      const id = e.target.closest('tr').dataset.id;
+      if (confirm('Hapus santri ini?')) {
+        try {
+          await deleteDoc(doc(db, 'santri', id));
+          alert("Santri dihapus.");
+        } catch (err) {
+          alert("Gagal menghapus santri.");
+        }
+      }
+    };
+  });
 }
+
 
 async function previewExcelFile(){
   const fileInput = document.getElementById('excelInput');
@@ -567,6 +2037,7 @@ async function previewExcelFile(){
   };
   reader.readAsArrayBuffer(file);
 }
+
 
 async function importSantriExcel(){
   const fileInput = document.getElementById('excelInput');
@@ -626,527 +2097,324 @@ async function importSantriExcel(){
   reader.readAsArrayBuffer(file);
 }
 
-function renderMapelEditor(){
+
+function renderMapelEditor() {
   mainPanel.innerHTML = `
-    <h3>DAFTAR MAPEL</h3>
-
-    <input type="file" id="fileMapel" accept=".xlsx,.csv" style="margin-bottom:8px;" />
-    <button class="btn small" id="btnImportMapel">Import Excel</button>
-
-    <label>Pilih Sheet</label>
-    <select id="sheetSelectorMapel" disabled style="margin-bottom:8px;">
-      <option value="">-- Pilih Sheet --</option>
-    </select>
-
-    <hr style="margin:12px 0">
-
-    <label>Tambah Mapel Manual</label>
-    <div class="list-editor">
-      <input type="text" id="newMapelName" placeholder="Nama mapel...">
-      <button class="btn" id="btnAddMapel">Tambah</button>
+    <h3>Daftar Mata Pelajaran & KKM</h3>
+    <div class="card" style="margin-bottom: 20px; border: 1px solid var(--primary-soft);">
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
+        <div>
+          <label>Nama Mata Pelajaran</label>
+          <input type="text" id="inputMapelName" placeholder="Contoh: Nahwu Wadhih">
+        </div>
+        <div>
+          <label>KKM</label>
+          <input type="number" id="inputMapelKKM" placeholder="0-100" min="0" max="100">
+        </div>
+      </div>
+      <button class="btn" id="btnAddMapel" style="margin-top: 15px; width: 100%;">
+        ➕ TAMBAH MATA PELAJARAN
+      </button>
     </div>
 
-<div style="margin-top:12px;max-height:420px;overflow:auto">
-  <button class="btn small ghost" id="btnDeleteSelectedMapel">Hapus Terpilih</button>
-
-  <table style="width:100%;margin-top:8px">
-    <thead>
-      <tr>
-        <th><input type="checkbox" id="chkAllMapel"></th>
-        <th>Nama Mapel</th>
-        <th style="width:120px">Aksi</th>
-      </tr>
-    </thead>
-    <tbody id="mapelTableBody">
-      ${mapelCache.map(m=>`
-        <tr data-id="${m.id}">
-          <td>
-            <input type="checkbox" class="chkMapel" data-id="${m.id}" data-name="${escapeHtml(m.name)}">
-          </td>
-          <td>
-            <input class="editableMapel" data-id="${m.id}" value="${escapeHtml(m.name)}">
-          </td>
-          <td>
-            <button class="btn small ghost btnRemoveMapel" data-id="${m.id}">Hapus</button>
-          </td>
-        </tr>
+    <div class="santri-list" id="mapelListContainer">
+      <div style="padding: 8px; font-weight: bold; color: var(--muted); display: flex; border-bottom: 2px solid #eee;">
+        <span style="flex: 2;">Mata Pelajaran</span>
+        <span style="flex: 1; text-align: center;">KKM</span>
+        <span style="flex: 1.5; text-align: right;">Aksi</span>
+      </div>
+      ${mapelCache.length === 0 ? '<p style="text-align:center; padding:20px;">Belum ada data mapel.</p>' : 
+        mapelCache.map(m => `
+        <div class="santri-row" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 8px;">
+          <div style="flex: 2;">
+            <strong style="color: var(--primary-dark);">${escapeHtml(m.name)}</strong>
+          </div>
+          <div style="flex: 1; text-align: center;">
+            <span class="badge" style="background: var(--primary-soft); font-size: 14px; padding: 4px 10px;">
+              ${m.kkm || 70}
+            </span>
+          </div>
+          <div style="flex: 1.5; text-align: right; display: flex; gap: 5px; justify-content: flex-end;">
+            <button class="btn small edit" onclick="window.editMapelKKM('${m.id}', '${escapeHtml(m.name)}', ${m.kkm || 70})">Edit</button>
+            <button class="btn small delete" onclick="window.deleteMapel('${m.id}')">Hapus</button>
+          </div>
+        </div>
       `).join('')}
-    </tbody>
-  </table>
-</div>
-
+    </div>
   `;
 
-document.getElementById('chkAllMapel').addEventListener('change', e=>{
-  const checked = e.target.checked;
-  document.querySelectorAll('.chkMapel').forEach(c=> c.checked = checked);
-});
+  // --- LOGIKA EVENT HANDLER ---
 
-document.getElementById('btnDeleteSelectedMapel').addEventListener('click', async ()=>{
-  const checked = Array.from(document.querySelectorAll('.chkMapel')).filter(c=>c.checked);
-  if(!checked.length) return alert('Pilih minimal 1 mapel');
+  // 1. Tambah Mapel
+  document.getElementById('btnAddMapel').onclick = async () => {
+    const nameInput = document.getElementById('inputMapelName');
+    const kkmInput = document.getElementById('inputMapelKKM');
+    const name = nameInput.value.trim();
+    const kkm = parseInt(kkmInput.value);
 
-  const mapelNames = checked.map(c => c.dataset.name);
+    if (!name || isNaN(kkm)) { alert("Mohon isi Nama Mapel dan KKM!"); return; }
+    if (kkm < 0 || kkm > 100) { alert("KKM harus 0 - 100!"); return; }
 
-  if(!confirm(`Hapus ${checked.length} mapel beserta SEMUA nilai terkait?`)) return;
+    try {
+      await addDoc(mapelCol, { name, kkm, createdAt: serverTimestamp() });
+      nameInput.value = ""; kkmInput.value = "";
+      // Re-render akan dipicu otomatis oleh onSnapshot jika Anda menggunakannya
+    } catch (e) { alert("Gagal menambah mapel."); }
+  };
 
-  const batch = writeBatch(db);
-
-  for(const c of checked){
-    const id = c.dataset.id;
-    const name = c.dataset.name;
-
-    // hapus mapel
-    batch.delete(doc(mapelCol, id));
-
-    // hapus semua nilai yg pakai mapel tsb
-    const snap = await getDocs(query(nilaiCol, where('mapel','==', name)));
-    snap.forEach(d => batch.delete(d.ref));
-  }
-
-  await batch.commit();
-  alert(`${checked.length} mapel berhasil dihapus`);
-});
-
-
-let mapelWorkbook = null;
-
-document.getElementById('fileMapel').addEventListener('change', async (e)=>{
-  const file = e.target.files[0];
-  if(!file) return;
-
-  const data = await file.arrayBuffer();
-  mapelWorkbook = XLSX.read(data);
-
-  const selector = document.getElementById('sheetSelectorMapel');
-  selector.innerHTML = '<option value="">-- Pilih Sheet --</option>';
-
-  mapelWorkbook.SheetNames.forEach(name=>{
-    selector.innerHTML += `<option value="${name}">${name}</option>`;
-  });
-
-  selector.disabled = false;
-});
-
-document.getElementById('btnImportMapel').addEventListener('click', async ()=>{
-  if(!mapelWorkbook) return alert('Pilih file Excel terlebih dahulu');
-
-  const sheetName = document.getElementById('sheetSelectorMapel').value;
-  if(!sheetName) return alert('Pilih sheet terlebih dahulu');
-
-  const worksheet = mapelWorkbook.Sheets[sheetName];
-
-  const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-    header: ["name"],
-    range: 1
-  });
-
-  if(!jsonData.length) return alert('Sheet kosong');
-
-  // Ambil mapel yang sudah ada
-  const existingMapel = mapelCache.map(m => m.name.toLowerCase().trim());
-
-  const batch = writeBatch(db);
-  let added = 0;
-  let skipped = 0;
-
-  jsonData.forEach(r=>{
-    if(!r.name) return;
-
-    const name = String(r.name).trim();
-    if(existingMapel.includes(name.toLowerCase())){
-      skipped++;
-      return;
+  // 2. Hapus Mapel (Didaftarkan ke window agar bisa dipanggil dari HTML onclick)
+  window.deleteMapel = async (id) => {
+    if (confirm("Apakah Anda yakin ingin menghapus mata pelajaran ini?")) {
+      try {
+        // Mengasumsikan 'db' dan 'doc' sudah diimport dari firebase/firestore
+        const docRef = doc(db, "mapel", id); 
+        await deleteDoc(docRef);
+        // Note: MapelCache akan terupdate otomatis jika ada listener onSnapshot
+      } catch (e) {
+        console.error("Error deleting doc: ", e);
+        alert("Gagal menghapus mata pelajaran.");
+      }
     }
-
-    batch.set(doc(mapelCol), {
-      name,
-      createdAt: serverTimestamp()
-    });
-    added++;
-  });
-
-  if(added === 0){
-    alert(`Tidak ada mapel baru.\nDuplikat dilewati: ${skipped}`);
-    return;
-  }
-
-  await batch.commit();
-  alert(`Import selesai\nDitambahkan: ${added}\nDuplikat dilewati: ${skipped}`);
-
-  document.getElementById('fileMapel').value = '';
-});
-
-
-  document.getElementById('btnAddMapel').addEventListener('click', async ()=>{ const v = document.getElementById('newMapelName').value.trim(); if(!v) return alert('Isi nama mapel terlebih dahulu'); await addDoc(collection(db,'mapel'), { name: v }); document.getElementById('newMapelName').value = ''; });
-  document.querySelectorAll('.btnRemoveMapel').forEach(b=>b.addEventListener('click', async (e)=>{ const id = e.currentTarget.dataset.id; if(!confirm('Hapus mapel ini?')) return; await deleteDoc(doc(db,'mapel',id)); }));
-  document.querySelectorAll('.editableMapel').forEach(input=>input.addEventListener('change', async e=>{ const id = e.target.dataset.id; const val = e.target.value.trim(); if(!val) return alert('Tidak boleh kosong'); await updateDoc(doc(db,'mapel',id),{ name: val }); }));
+  };
 }
 
-// ====== REKAP SISWA ======
-function avg(arr){
-  if(!arr || !arr.length) return 0;
-  return arr.reduce((a,b)=>a+b,0) / arr.length;
-}
 
 function renderRekapSiswa(page = 1) {
+  // --- 1. Helper & Inisialisasi ---
+  const avg = (arr) => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
 
-  // ======================================
-  // DROPDOWN ROWS PER PAGE (dengan cache)
-  // ======================================
+  // Load Pengaturan dari UI atau LocalStorage
   let rowsPerPage = parseInt(localStorage.getItem("rekap_rows_per_page") || "10");
-  if (![10, 20, 50, 100].includes(rowsPerPage)) rowsPerPage = 10;
+  const weightUH = parseFloat(document.getElementById('weightUH')?.value) || 0.3;
+  const weightPTS = parseFloat(document.getElementById('weightPTS')?.value) || 0.3;
+  const weightPAS = parseFloat(document.getElementById('weightPAS')?.value) || 0.4;
+  
+  // Ambil Nilai Filter
+  const fStatus = document.getElementById('rekapFilterStatus')?.value || "SEMUA";
+  const fKelas = document.getElementById('rekapFilterKelas')?.value || "SEMUA";
+  const fMapel = document.getElementById('rekapFilterMapel')?.value || "SEMUA";
 
-  let weightUH = parseFloat(document.getElementById('weightUH')?.value) || 0.3;
-  let weightPTS = parseFloat(document.getElementById('weightPTS')?.value) || 0.3;
-  let weightPAS = parseFloat(document.getElementById('weightPAS')?.value) || 0.4;
-
-  const selectMapel = document.getElementById('rekapFilterMapel');
-  const fMapelArr = selectMapel ? Array.from(selectMapel.selectedOptions).map(o => o.value) : [];
-
+  // --- 2. Pengelompokan Data (Grouping) ---
   const grouped = {};
   (window._latestTx || []).forEach(t => {
-    if(!grouped[t.santriName]) grouped[t.santriName] = [];
+    if (!grouped[t.santriName]) grouped[t.santriName] = [];
     grouped[t.santriName].push(t);
   });
 
-  const mapelOptions = mapelCache
-    .map(m => `<option value="${m.name}" ${fMapelArr.includes(m.name) ? 'selected' : ''}>${m.name}</option>`)
+  // --- 3. Pengolahan Data & Perhitungan NA ---
+  let rawTableData = [];
+  Object.keys(grouped).forEach(sName => {
+    const distinctMapels = [...new Set(grouped[sName].map(t => t.mapel))];
+    
+    distinctMapels.forEach(mName => {
+      // Filter Mapel (Dropdown Tunggal)
+      if (fMapel !== "SEMUA" && mName !== fMapel) return;
+
+      const records = grouped[sName].filter(t => t.mapel === mName);
+      const sKelas = records[0]?.kelas || '-';
+
+      // Filter Kelas (Dropdown)
+      if (fKelas !== "SEMUA" && sKelas !== fKelas) return;
+      
+      const uhScores = records.filter(t => t.type === 'UH').map(t => t.score);
+      const ptsScores = records.filter(t => t.type === 'PTS').map(t => t.score);
+      
+      const pasLisan = records.filter(t => t.type === 'PAS_LISAN').map(t => t.score);
+      const pasTulis = records.filter(t => t.type === 'PAS_TULIS').map(t => t.score);
+      const pasPraktek = records.filter(t => t.type === 'PAS_PRAKTEK').map(t => t.score);
+      
+      const allPasScores = [...pasLisan, ...pasTulis, ...pasPraktek];
+
+      const avgUH = uhScores.length ? avg(uhScores) : 0;
+      const avgPTS = ptsScores.length ? avg(ptsScores) : 0;
+      const avgPAS = allPasScores.length ? avg(allPasScores) : 0;
+
+      const naValue = (avgUH * weightUH) + (avgPTS * weightPTS) + (avgPAS * weightPAS);
+      const finalNA = Number(naValue.toFixed(2));
+
+      const mapelRef = (typeof mapelCache !== 'undefined' ? mapelCache : []).find(m => m.name === mName);
+      const kkm = mapelRef ? parseFloat(mapelRef.kkm || 70) : 70;
+      const status = finalNA < kkm ? "REMIDI" : "LULUS";
+
+      rawTableData.push({
+        santri: sName,
+        kelas: sKelas,
+        mapel: mName,
+        kkm: kkm,
+        uh: uhScores.length ? Number(avgUH.toFixed(2)) : null,
+        pts: ptsScores.length ? Number(avgPTS.toFixed(2)) : null,
+        pasLisan: pasLisan.length ? avg(pasLisan).toFixed(1) : null,
+        pasTulis: pasTulis.length ? avg(pasTulis).toFixed(1) : null,
+        pasPraktek: pasPraktek.length ? avg(pasPraktek).toFixed(1) : null,
+        pasAvg: allPasScores.length ? Number(avgPAS.toFixed(2)) : null,
+        na: finalNA,
+        status: status
+      });
+    });
+  });
+
+  // --- 4. Filter Status ---
+  const filteredData = rawTableData.filter(item => {
+    if (fStatus === "REMIDI") return item.status === "REMIDI";
+    if (fStatus === "LULUS") return item.status === "LULUS";
+    return true;
+  });
+
+  // --- 5. Paginasi ---
+  const totalRows = filteredData.length;
+  const totalPages = Math.max(1, Math.ceil(totalRows / rowsPerPage));
+  const currentPage = page > totalPages ? totalPages : (page < 1 ? 1 : page);
+  const startIdx = (currentPage - 1) * rowsPerPage;
+  const paginatedRows = filteredData.slice(startIdx, startIdx + rowsPerPage);
+
+  // --- 6. Render UI ---
+  
+  // Ambil list unik Kelas & Mapel untuk Dropdown
+  const listKelasUnik = [...new Set((typeof santriCache !== 'undefined' ? santriCache : []).map(s => s.kelas))].filter(k => k).sort();
+  const mapelOptions = (typeof mapelCache !== 'undefined' ? mapelCache : [])
+    .map(m => `<option value="${m.name}" ${fMapel === m.name ? 'selected' : ''}>${m.name}</option>`)
     .join('');
 
-  function formatScore(num){
-    if(num === '' || num == null || isNaN(num)) return '';
-    return Number(num.toFixed(2)).toString().replace('.', ',');
-  }
-
-  // ======================================
-  // SUSUN DATA TABEL
-  // ======================================
-  let tableData = [];
-
-  Object.keys(grouped).forEach(s => {
-    const mapels = [...new Set(grouped[s].map(t => t.mapel))];
-    mapels.forEach(mapelName => {
-      if(fMapelArr.length && !fMapelArr.includes(mapelName)) return;
-
-      const arr = grouped[s].filter(t => t.mapel === mapelName);
-const uhArr = arr.filter(t => t.type === 'UH').map(t => t.score);
-const ptsArr = arr.filter(t => t.type === 'PTS').map(t => t.score);
-
-// PAS TANPA BOBOT (rata-rata murni)
-const pasLisanArr   = arr.filter(t => t.type === 'PAS_LISAN').map(t => t.score);
-const pasTulisArr   = arr.filter(t => t.type === 'PAS_TULIS').map(t => t.score);
-const pasPraktekArr = arr.filter(t => t.type === 'PAS_PRAKTEK').map(t => t.score);
-
-// Rata-rata UH & PTS
-const uh  = uhArr.length ? formatScore(avg(uhArr)) : '';
-const pts = ptsArr.length ? formatScore(avg(ptsArr)) : '';
-
-// Rata-rata masing-masing PAS (tanpa bobot)
-const pasLisanAvg   = pasLisanArr.length   ? avg(pasLisanArr)   : '';
-const pasTulisAvg   = pasTulisArr.length   ? avg(pasTulisArr)   : '';
-const pasPraktekAvg = pasPraktekArr.length ? avg(pasPraktekArr) : '';
-
-// PAS Akhir = gabungan semua PAS (TANPA BOBOT)
-const pasGabungan = [
-  ...pasLisanArr,
-  ...pasTulisArr,
-  ...pasPraktekArr
-];
-
-const pasAkhir = pasGabungan.length ? avg(pasGabungan) : 0;
-
-// Nilai Akhir (NA) — tetap pakai bobot
-const na = formatScore(
-  avg(uhArr)  * weightUH +
-  avg(ptsArr) * weightPTS +
-  pasAkhir    * weightPAS
-);
-
-// Masukkan ke tabel
-tableData.push({
-  santri: s,
-  mapel: mapelName,
-  uh,
-  pts,
-  pasLisan: pasLisanAvg !== '' ? formatScore(pasLisanAvg) : '',
-  pasTulis: pasTulisAvg !== '' ? formatScore(pasTulisAvg) : '',
-  pasPraktek: pasPraktekAvg !== '' ? formatScore(pasPraktekAvg) : '',
-  na
-});
-
-
-    });
-  });
-
-  // ======================================
-  // PAGINASI
-  // ======================================
-  const totalRows = tableData.length;
-  const totalPages = Math.max(1, Math.ceil(totalRows / rowsPerPage));
-
-  if (page < 1) page = 1;
-  if (page > totalPages) page = totalPages;
-
-  const start = (page - 1) * rowsPerPage;
-  const paginatedRows = tableData.slice(start, start + rowsPerPage);
-
-  // ======================================
-  // BANGUN HTML
-  // ======================================
   let html = `
-    <h3>REKAP PER SISWA</h3>
+    <div class="panel">
+      <h3 style="margin-top:0">REKAP NILAI AKHIR (NA)</h3>
+      
+      <div style="background:#f8fafc; padding:15px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:20px;">
+        <div class="grid" style="grid-template-columns: 1.5fr 1fr; gap:20px;">
+          <div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+               <div>
+                  <label><b>1. Filter Kelas:</b></label>
+                  <select id="rekapFilterKelas" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                    <option value="SEMUA">Semua Kelas</option>
+                    ${listKelasUnik.map(k => `<option value="${k}" ${fKelas === k ? 'selected' : ''}>Kelas ${k}</option>`).join('')}
+                  </select>
+               </div>
+               <div>
+                  <label><b>2. Filter Mapel:</b></label>
+                  <select id="rekapFilterMapel" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                    <option value="SEMUA">Semua Mapel</option>
+                    ${mapelOptions}
+                  </select>
+               </div>
+            </div>
 
-    <div class="weight-container">
-      <div class="weight-item">
-        <label><input type="checkbox" id="chkSelectAllMapel"> Pilih Semua Mapel</label><br>
-        <label>Filter Mapel:</label>
-        <select id="rekapFilterMapel" multiple size="5">${mapelOptions}</select>
+            <label style="display:block; margin-top:10px;"><b>3. Filter Status:</b></label>
+            <select id="rekapFilterStatus" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--primary);">
+              <option value="SEMUA" ${fStatus==='SEMUA'?'selected':''}>Tampilkan Semua Status</option>
+              <option value="REMIDI" ${fStatus==='REMIDI'?'selected':''}>Hanya Remidi ( < KKM )</option>
+              <option value="LULUS" ${fStatus==='LULUS'?'selected':''}>Hanya Lulus ( Tuntas )</option>
+            </select>
+          </div>
+
+          <div style="background:#fff; padding:10px; border-radius:10px; border:1px dashed #cbd5e1;">
+            <label><b>4. Atur Bobot Nilai:</b></label>
+            <div style="margin-top:5px;">
+              <small>UH</small> <input type="number" id="weightUH" value="${weightUH}" step="0.1" style="width:60px; float:right">
+              <div style="clear:both; margin-bottom:8px;"></div>
+              <small>PTS</small> <input type="number" id="weightPTS" value="${weightPTS}" step="0.1" style="width:60px; float:right">
+              <div style="clear:both; margin-bottom:8px;"></div>
+              <small>PAS</small> <input type="number" id="weightPAS" value="${weightPAS}" step="0.1" style="width:60px; float:right">
+              <div style="clear:both; margin-top:10px; border-top:1px solid #eee; padding-top:5px;">
+                <button class="btn small" style="width:100%" id="btnUpdateNA">Update & Hitung</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:15px; display:flex; gap:10px; align-items:center;">
+          <button class="btn small edit" id="btnExportExcel">📗 Download Excel</button>
+          <span class="badge" style="padding:10px; background:var(--primary-soft); color:var(--primary-dark)">Ditemukan: ${totalRows} Data</span>
+        </div>
       </div>
 
-      <div class="weight-item">
-        <label>Bobot UH:</label>
-        <input type="number" id="weightUH" value="${weightUH}" step="0.05" min="0" max="1">
+      <div class="table-responsive">
+        <table style="width:100%; font-size:12px;">
+          <thead>
+            <tr style="background:#f1f5f9">
+              <th>Santri</th>
+              <th>Kelas</th>
+              <th>Mapel</th>
+              <th>Rata UH</th>
+              <th>PTS</th>
+              <th>PAS L</th>
+              <th>PAS T</th>
+              <th>PAS P</th>
+              <th style="background:#e2e8f0; text-align:center;">N.A</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${paginatedRows.length ? paginatedRows.map(r => {
+              const isRemidi = r.status === "REMIDI";
+              const naStyle = isRemidi 
+                ? "background:#ef4444; color:#fff; padding:4px 6px; border-radius:4px; font-weight:bold;" 
+                : "background:#22c55e; color:#fff; padding:4px 6px; border-radius:4px; font-weight:bold;";
+              
+              return `
+                <tr>
+                  <td><b>${r.santri}</b></td>
+                  <td align="center"><span class="badge">${r.kelas}</span></td>
+                  <td>${r.mapel} <br><small style="color:gray">KKM: ${r.kkm}</small></td>
+                  <td align="center">${r.uh ?? '-'}</td>
+                  <td align="center">${r.pts ?? '-'}</td>
+                  <td align="center" style="color:var(--primary-dark)">${r.pasLisan ?? '-'}</td>
+                  <td align="center" style="color:var(--primary-dark)">${r.pasTulis ?? '-'}</td>
+                  <td align="center" style="color:var(--primary-dark)">${r.pasPraktek ?? '-'}</td>
+                  <td align="center"><span style="${naStyle}">${r.na}</span></td>
+                </tr>
+              `;
+            }).join('') : '<tr><td colspan="9" align="center" style="padding:20px;">Data tidak ditemukan. Pastikan filter sudah benar.</td></tr>'}
+          </tbody>
+        </table>
       </div>
-      <div class="weight-item">
-        <label>Bobot PTS:</label>
-        <input type="number" id="weightPTS" value="${weightPTS}" step="0.05" min="0" max="1">
+
+      <div style="margin-top:15px; display:flex; justify-content:center; align-items:center; gap:15px;">
+        <button class="btn small ghost" id="pgPrev" ${currentPage<=1?'disabled':''}>Prev</button>
+        <span>Hal. <b>${currentPage}</b> / ${totalPages}</span>
+        <button class="btn small ghost" id="pgNext" ${currentPage>=totalPages?'disabled':''}>Next</button>
+        <select id="rowsPerPageSelect" style="width:auto; padding:5px; border-radius:5px;">
+          ${[10,20,50,100,500].map(v => `<option value="${v}" ${rowsPerPage===v?'selected':''}>${v} baris</option>`).join('')}
+        </select>
       </div>
-
-<div class="weight-item">
-  <label>Bobot PAS (Total):</label>
-  <input type="number" id="weightPAS" value="0.4" step="0.05" min="0" max="1">
-</div>
-
-      <button class="btn small" id="btnUpdateNA">Update NA</button>
-      <div id="weightError" style="color:red;font-size:13px;margin-top:4px;"></div>
-
-      <button class="btn small" id="btnExportCSV" style="margin-left:12px;">Export CSV</button>
-    </div>
-
-    <!-- DROPDOWN ROWS PER PAGE -->
-    <div style="margin-top:10px;">
-      <label>Tampilkan:</label>
-      <select id="rowsPerPageSelect" style="padding:4px 6px;">
-        <option value="10" ${rowsPerPage===10?'selected':''}>10 baris</option>
-        <option value="20" ${rowsPerPage===20?'selected':''}>20 baris</option>
-        <option value="50" ${rowsPerPage===50?'selected':''}>50 baris</option>
-        <option value="100" ${rowsPerPage===100?'selected':''}>100 baris</option>
-      </select>
-    </div>
-
-    <div id="rekapTableWrapper" style="margin-top:12px; overflow:auto;">
-      <table id="rekapTable">
-        <thead>
-          <tr>
-             <th>Santri</th>
-             <th>Mapel</th>
-             <th>UH</th>
-             <th>PTS</th>
-             <th>PAS Lisan</th>
-             <th>PAS Tulis</th>
-             <th>PAS Praktek</th>
-             <th>NA</th>
-          </tr>
-        </thead>
-
-        <tbody>
-  `;
-
-paginatedRows.forEach(r => {
-  html += `
-    <tr>
-      <td data-label="Santri">${escapeHtml(r.santri)}</td>
-      <td data-label="Mapel">${escapeHtml(r.mapel)}</td>
-      <td data-label="UH">${r.uh}</td>
-      <td data-label="PTS">${r.pts}</td>
-      <td data-label="PAS Lisan">${r.pasLisan}</td>
-      <td data-label="PAS Tulis">${r.pasTulis}</td>
-      <td data-label="PAS Praktek">${r.pasPraktek}</td>
-      <td data-label="NA" class="na-cell">${r.na}</td>
-    </tr>
-  `;
-});
-
-
-  html += `
-        </tbody>
-      </table>
-    </div>
-
-    <div style="margin-top:10px; display:flex; gap:10px; align-items:center;">
-      <button class="btn small" id="pgPrev" ${page<=1?'disabled':''}>Prev</button>
-      <span>Halaman ${page} dari ${totalPages}</span>
-      <button class="btn small" id="pgNext" ${page>=totalPages?'disabled':''}>Next</button>
     </div>
   `;
 
-  mainPanel.innerHTML = html;
+  document.getElementById('mainPanel').innerHTML = html;
 
-  // ======================================
-  // EVENT: DROPDOWN ROWS PER PAGE
-  // ======================================
-  document.getElementById("rowsPerPageSelect").onchange = e => {
-    const val = parseInt(e.target.value);
-    localStorage.setItem("rekap_rows_per_page", val);
-    renderRekapSiswa(1); // reset ke halaman 1
+  // --- 7. Event Handlers ---
+  document.getElementById('rekapFilterStatus').onchange = () => renderRekapSiswa(1);
+  document.getElementById('rekapFilterKelas').onchange = () => renderRekapSiswa(1);
+  document.getElementById('rekapFilterMapel').onchange = () => renderRekapSiswa(1);
+  document.getElementById('btnUpdateNA').onclick = () => renderRekapSiswa(1);
+  
+  document.getElementById("rowsPerPageSelect").onchange = (e) => {
+    localStorage.setItem("rekap_rows_per_page", e.target.value);
+    renderRekapSiswa(1);
   };
 
-  // ======================================
-  // EVENT PAGINASI
-  // ======================================
-  document.getElementById("pgPrev").onclick = () => renderRekapSiswa(page - 1);
-  document.getElementById("pgNext").onclick = () => renderRekapSiswa(page + 1);
+  document.getElementById("pgPrev").onclick = () => renderRekapSiswa(currentPage - 1);
+  document.getElementById("pgNext").onclick = () => renderRekapSiswa(currentPage + 1);
 
-  // ======================================
-  // EVENT CEK BOBOT
-  // ======================================
-  const btnUpdate = document.getElementById('btnUpdateNA');
-  const errorDiv = document.getElementById('weightError');
-  const inputs = [
-    document.getElementById('weightUH'),
-    document.getElementById('weightPTS'),
-    document.getElementById('weightPAS')
-  ];
-
-  function checkTotalWeight() {
-    const total = inputs.reduce((sum, el) => sum + parseFloat(el.value || 0), 0);
-    if(total !== 1){
-      errorDiv.innerText = `Total bobot UH + PTS + PAS harus 1. Saat ini: ${total}`;
-      btnUpdate.disabled = true;
-    } else {
-      errorDiv.innerText = '';
-      btnUpdate.disabled = false;
-    }
-  }
-
-  inputs.forEach(i => i.addEventListener('input', checkTotalWeight));
-  checkTotalWeight();
-
-  // ======================================
-  // MULTI SELECT MAPEL
-  // ======================================
-  const chkAll = document.getElementById('chkSelectAllMapel');
-  const selMapel = document.getElementById('rekapFilterMapel');
-
-  chkAll.checked = selMapel && Array.from(selMapel.options).every(o => o.selected);
-
-  chkAll.addEventListener('change', e => {
-    const check = e.target.checked;
-    Array.from(selMapel.options).forEach(o => o.selected = check);
-    renderRekapSiswa(1);
-  });
-
-  selMapel.addEventListener('change', () => {
-    chkAll.checked = Array.from(selMapel.options).every(o => o.selected);
-    renderRekapSiswa(1);
-  });
-
-  btnUpdate.addEventListener('click', () => renderRekapSiswa(1));
-
-  // ======================================
-  // EXPORT CSV
-  // ======================================
-  document.getElementById("btnExportCSV").onclick = () => {
-    const rows = tableData; // ekspor semua data, bukan hanya halaman
-    let csv = [];
-
-    csv.push(`"Santri","Mapel","UH","PTS","PAS Lisan","PAS Tulis","PAS Praktek","NA"`);
-
-    rows.forEach(r => {
-csv.push([
-  r.santri,
-  r.mapel,
-  r.uh,
-  r.pts,
-  r.pasLisan,
-  r.pasTulis,
-  r.pasPraktek,
-  r.na
-].map(v => `"${v ?? ''}"`).join(','));
-
-    });
-
-    const blob = new Blob([csv.join("\n")], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-
-    a.href = url;
-    a.download = `rekap_siswa.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+  document.getElementById("btnExportExcel").onclick = () => {
+    if (!filteredData.length) return alert("Tidak ada data untuk diekspor");
+    const worksheet = XLSX.utils.json_to_sheet(filteredData.map(d => ({
+      "Nama Santri": d.santri,
+      "Kelas": d.kelas,
+      "Mapel": d.mapel,
+      "KKM": d.kkm,
+      "Rata UH": d.uh,
+      "PTS": d.pts,
+      "PAS Lisan": d.pasLisan,
+      "PAS Tulis": d.pasTulis,
+      "PAS Praktek": d.pasPraktek,
+      "Nilai Akhir": d.na,
+      "Status": d.status
+    })));
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap");
+    XLSX.writeFile(workbook, `Rekap_Nilai_${fKelas}_${fMapel}_${new Date().getTime()}.xlsx`);
   };
 }
-
-
-
-// ====== TRANSAKSI PANEL DENGAN FILTER (DIPADUKAN DENGAN PAGINASI) ======
-transactionsFilter.innerHTML = `
-<div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap">
-  <label style="margin-bottom:0">Tipe</label>
-  <select id="filterType">
-    <option value="">Semua</option>
-    <option value="UH">UH</option>
-    <option value="PTS">PTS</option>
-    <option value="PAS_LISAN">PAS Lisan</option>
-    <option value="PAS_TULIS">PAS Tulis</option>
-    <option value="PAS_PRAKTEK">PAS Praktek</option>
-  </select>
-
-  <label style="margin-bottom:0">Mapel</label>
-  <select id="filterMapel"><option value="">Semua Mapel</option></select>
-
-  <label style="margin-bottom:0">Santri</label>
-  <select id="filterSantri"><option value="">Semua Santri</option></select>
-
-  <button class="btn small" id="btnExport">Export CSV</button>
-</div>
-`;
-
-// Tambah dropdown rows per page
-const rowsPerPageBox = document.createElement("div");
-rowsPerPageBox.style = "margin: 10px 0;";
-rowsPerPageBox.innerHTML = `
-  <label>Rows per page:
-    <select id="rowsPerPage">
-      <option value="10">10</option>
-      <option value="25">25</option>
-      <option value="50">50</option>
-    </select>
-  </label>
-`;
-transactionsFilter.appendChild(rowsPerPageBox);
-
-// ==============PAGINATION STATE=========
-let currentPage = 1;
-let pageSize = 10;
-
-// Utility: change page (delta = +1 or -1)
-function changePage(delta){
-  currentPage = Math.max(1, currentPage + delta);
-  renderTransactionsWith(window._latestTx || []);
-}
-
-// Edit & Delete helper functions (dipanggil dari tombol)
-window.editTransaksi = async function(id){
-  const d = (window._latestTx || []).find(t => t.id === id);
-  if(!d) return alert('Data tidak ditemukan');
-  const val = prompt(`Edit nilai ${d.santriName} (${d.type} - ${d.mapel}):`, d.score);
-  if(val === null) return;
-  const n = Number(val);
-  if(isNaN(n)) return alert('Input salah');
-  try{
-    await updateDoc(doc(db,'nilai',id), { score: n, updatedAt: serverTimestamp() });
-    alert('Nilai diperbarui');
-  }catch(e){ console.error(e); alert('Gagal update'); }
-};
-
-window.deleteTransaksi = async function(id){
-  if(!confirm('Hapus transaksi ini?')) return;
-  try{
-    await deleteDoc(doc(db,'nilai',id));
-  }catch(err){ console.error(err); alert('Gagal menghapus'); }
-};
 
 
 function labelType(type){
@@ -1156,491 +2424,491 @@ function labelType(type){
   return type;
 }
 
-// Main render function: menerima daftar transaksi (snapshot mapped)
-function renderTransactionsWith(txList){
-  txList = txList || [];
-  const mapelSelect = document.getElementById('filterMapel');
-  const santriSelect = document.getElementById('filterSantri');
-  const typeSelect = document.getElementById('filterType');
 
-  // simpan prev
-  const selectedType = typeSelect?.value || '';
-  const selectedMapel = mapelSelect?.value || '';
-  const selectedSantri = santriSelect?.value || '';
+// Variabel Global untuk Pagination
+function renderFilterBar() {
+  const filterContainer = document.getElementById('transactionsFilter');
+  if (!filterContainer) return;
 
-  // sync dropdowns
-  if(mapelSelect && mapelCache.length){
-    mapelSelect.innerHTML = '<option value="">Semua Mapel</option>' + mapelCache.map(m=>`<option value="${m.name}">${m.name}</option>`).join('');
-    mapelSelect.value = selectedMapel;
-  }
-  if(santriSelect && santriCache.length){
-    santriSelect.innerHTML = '<option value="">Semua Santri</option>' + santriCache.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
-    santriSelect.value = selectedSantri;
-  }
-  if(typeSelect) typeSelect.value = selectedType;
+  filterContainer.innerHTML = `
+    <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+      <input type="text" id="filterSearch" placeholder="Cari Nama Santri..." 
+        style="padding:8px; border-radius:8px; border:1px solid #ccc; flex:1;">
+      
+      <select id="filterType" style="padding:8px; border-radius:8px; border:1px solid #ccc;">
+        <option value="">Semua Tipe</option>
+        <option value="UH">UH</option>
+        <option value="PTS">PTS</option>
+        <option value="PAS_LISAN">PAS Lisan</option>
+        <option value="PAS_TULIS">PAS Tulis</option>
+        <option value="PAS_PRAKTEK">PAS Praktek</option>
+      </select>
 
-  const fType = (typeSelect?.value || '').trim();
-  const fMapel = (mapelSelect?.value || '').trim();
-  const fSantri = (santriSelect?.value || '').trim();
+      <button class="btn small delete-all" id="btnHapusSemua">Hapus Semua Data</button>
+    </div>
+  `;
 
-  // filter berdasarkan dropdowns
-  const arr = txList.filter(t => {
-    const matchType = !fType || t.type === fType;
-    const matchMapel = !fMapel || t.mapel === fMapel;
-    const matchSantri = !fSantri || t.santriId === fSantri;
-    return matchType && matchMapel && matchSantri;
+  // Tambahkan event listener untuk pencarian otomatis
+  document.getElementById('filterSearch').addEventListener('input', () => {
+    renderTransactionsWith(window._latestTx || []);
   });
 
-  // jika kosong setelah filter
-  if(!arr.length){
-    transactionsPanel.innerHTML = '<div style="padding:12px;color:var(--muted)">Tidak ada transaksi sesuai filter.</div>';
-    return;
-  }
+  document.getElementById('filterType').addEventListener('change', () => {
+    renderTransactionsWith(window._latestTx || []);
+  });
 
-  // PAGINATION
-  const totalItems = arr.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
-  if(currentPage > totalPages) currentPage = totalPages;
-  const start = (currentPage - 1) * pageSize;
-  const paginated = arr.slice(start, start + pageSize);
-
-  // Render tabel (versi lama, mobile-friendly)
-  transactionsPanel.innerHTML = `<table>
-    <thead><tr><th>No</th><th>Tipe</th><th>Mapel</th><th>Santri</th><th>Nilai</th><th>Waktu</th><th>Aksi</th></tr></thead>
-    <tbody>
-      ${paginated.map((t,i)=>`<tr>
-        <td data-label="No">${start + i + 1}</td>
-        <td data-label="Tipe">${escapeHtml(t.type)}</td>
-        <td data-label="Mapel">${escapeHtml(t.mapel)}</td>
-        <td data-label="Santri">${escapeHtml(t.santriName)}</td>
-        <td data-label="Nilai">${t.score}</td>
-        <td data-label="Waktu">${fmtDate(t.createdAt)}</td>
-        <td data-label="Aksi" class="actions">
-          <button class="btnEditTx" data-id="${t.id}">Edit</button>
-          <button class="btnDelTx" data-id="${t.id}">Hapus</button>
-        </td>
-      </tr>`).join('')}
-    </tbody>
-  </table>
-
-  <div style="margin-top:10px; display:flex; justify-content:center; gap:8px; align-items:center;">
-    <button class="btn small ghost" id="prevPageBtn" ${currentPage===1?'disabled':''}>← Prev</button>
-    <span>Halaman ${currentPage} dari ${totalPages} — Total: ${totalItems}</span>
-    <button class="btn small ghost" id="nextPageBtn" ${currentPage===totalPages?'disabled':''}>Next →</button>
-  </div>`;
-
-  // attach events for edit & delete (these call global functions)
-  document.querySelectorAll('.btnDelTx').forEach(b=>b.addEventListener('click', async e=>{
-    const id = e.currentTarget.dataset.id;
-    await window.deleteTransaksi(id);
-  }));
-
-  document.querySelectorAll('.btnEditTx').forEach(b=>b.addEventListener('click', async e=>{
-    const id = e.currentTarget.dataset.id;
-    await window.editTransaksi(id);
-  }));
-
-  // page buttons
-  document.getElementById('prevPageBtn').addEventListener('click', ()=> changePage(-1));
-  document.getElementById('nextPageBtn').addEventListener('click', ()=> changePage(1));
+  // Logika Hapus Semua (Hanya Admin)
+  document.getElementById('btnHapusSemua').onclick = async () => {
+    if (confirm('PERINGATAN: Hapus SEMUA data nilai secara permanen?')) {
+      const batch = writeBatch(db);
+      const snap = await getDocs(nilaiCol);
+      snap.forEach(d => batch.delete(d.ref));
+      await batch.commit();
+      alert('Semua data berhasil dihapus.');
+    }
+  };
 }
-
-// FILTER EVENTS
-['filterType','filterMapel','filterSantri'].forEach(id=>{
-  const el = document.getElementById(id);
-  if(el){
-    el.addEventListener('change', ()=>{
-      currentPage = 1; // reset ke halaman 1 saat filter berubah
-      renderTransactionsWith(window._latestTx || []);
-    });
-  }
-});
-
-
-document.getElementById("rowsPerPage").addEventListener("change", (e) => {
-  pageSize = parseInt(e.target.value);
-  currentPage = 1;
-  renderTransactionsWith(window._latestTx || []);
-});
-
-// EXPORT CSV berdasarkan filter aktif (export seluruh hasil filter, bukan hanya halaman)
-document.getElementById('btnExport').addEventListener('click', ()=>{
-  const fType = document.getElementById('filterType')?.value || '';
-  const fMapel = document.getElementById('filterMapel')?.value || '';
-  const fSantri = document.getElementById('filterSantri')?.value || '';
-
-  const tx = (window._latestTx||[]).filter(t =>
-    (!fType || t.type === fType) &&
-    (!fMapel || t.mapel === fMapel) &&
-    (!fSantri || t.santriId === fSantri)
-  );
-
-  if(!tx.length) return alert('Tidak ada data untuk diexport.');
-
-  const csvRows = ['Tipe,Mapel,Santri,Nilai,Timestamp'];
-  tx.forEach(t=>{
-    const ts = t.createdAt && t.createdAt.toDate ? t.createdAt.toDate().toISOString() : '';
-    const mapel = `"${(t.mapel||'').replace(/"/g,'""')}"`;
-    const santriName = `"${(t.santriName||'').replace(/"/g,'""')}"`;
-    csvRows.push(`${t.type},${mapel},${santriName},${t.score},${ts}`);
-  });
-
-  const blob = new Blob([csvRows.join('\n')], {type:'text/csv'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'transaksi_nilai_filtered.csv'; a.click();
-  URL.revokeObjectURL(url);
-});
 
 
 // ====== DAFTAR GURU =====
-function renderGuruEditor(){
+async function renderGuruEditor() {
+  if (userRole !== 'ADMIN') return;
 
-  // ===============================
-  // HTML
-  // ===============================
+  // 1. Persiapan Data Mapel untuk Dropdown
+  const mapelOptionsRaw = mapelCache.length 
+    ? mapelCache.map(m => `<option value="${escapeHtml(m.name)}">${escapeHtml(m.name)}</option>`).join('')
+    : '<option value="">-- Isi Daftar Mapel Terlebih Dahulu --</option>';
+
+  // 2. Render UI Utama
   mainPanel.innerHTML = `
-    <h3>DAFTAR GURU</h3>
+    <h3>MANAJEMEN DAFTAR GURU</h3>
 
-    <input type="file" id="fileGuru" accept=".xlsx,.csv" style="margin-bottom:8px;" />
-    <button class="btn small" id="btnImportGuru">Import Excel</button>
+    <div style="background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px dashed #cbd5e1;">
+      <label style="font-weight:bold; color:var(--primary-dark);">Import Guru (Excel)</label>
+      <input type="file" id="fileGuru" accept=".xlsx,.csv" style="display:block; margin: 10px 0;" />
+      <div style="display:flex; gap:8px;">
+        <button class="btn small" id="btnImportGuru">1. Baca File</button>
+        <select id="sheetSelectorGuru" disabled style="flex:1;">
+          <option value="">2. Pilih Sheet</option>
+        </select>
+      </div>
+      <p style="font-size:11px; color:var(--muted); margin-top:8px;">Format Kolom: <b>Nama, NIP, Mapel</b></p>
+    </div>
 
-    <label>Pilih Sheet</label>
-    <select id="sheetSelectorGuru" disabled style="margin-bottom:8px;">
-      <option value="">-- Pilih Sheet --</option>
-    </select>
+    <div class="card" style="padding:15px; border:1px solid #e2e8f0; margin-bottom:20px;">
+      <label style="font-weight:bold;">Tambah Guru Secara Manual</label>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px;">
+        <input type="text" id="guruName" placeholder="Nama Lengkap" style="width:100%" />
+        <input type="text" id="guruNip" placeholder="NIP/NIY (Wajib Unik)" style="width:100%" />
+      </div>
+      <select id="guruMapel" style="width:100%; margin:10px 0;">
+        <option value="">-- Pilih Mapel Pengampu --</option>
+        ${mapelOptionsRaw}
+      </select>
+      <button class="btn" id="btnAddGuru" style="width:100%">Tambah Guru</button>
+    </div>
 
-    <hr>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <button class="btn small delete-all" id="btnDeleteSelectedGuru">Hapus Terpilih</button>
+      <span class="badge">${guruCache.length} Guru Terdaftar</span>
+    </div>
 
-    <input id="guruName" placeholder="Nama Guru" />
-    <input id="guruNip" placeholder="NIP" />
-    <select id="guruMapel">
-    <option value="">-- Pilih Mapel --</option>
-    </select>
-    <button class="btn" id="btnAddGuru" disabled>Tambah Guru</button>
-
-    <hr>
-
-    <button class="btn danger small" id="btnDeleteSelected">
-      Hapus Terpilih
-    </button>
-
-    <table class="table">
-      <thead>
-        <tr>
-          <th>
-            <input type="checkbox" id="checkAllGuru">
-          </th>
-          <th>Nama</th>
-          <th>NIP</th>
-          <th>Mapel</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody id="guruTable"></tbody>
-    </table>
+    <div class="table-responsive">
+      <table style="width:100%; background:#fff;">
+        <thead>
+          <tr>
+            <th width="40"><input type="checkbox" id="checkAllGuru"></th>
+            <th>Nama Guru</th>
+            <th>NIP</th>
+            <th>Mapel diampu</th>
+            <th width="150">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="guruTableBody">
+          ${guruCache.map(g => `
+            <tr id="row-${g.id}">
+              <td><input type="checkbox" class="checkGuru" data-id="${g.id}"></td>
+              <td class="cell-name"><b>${escapeHtml(g.name)}</b></td>
+              <td class="cell-nip">${escapeHtml(g.nip || '-')}</td>
+              <td class="cell-mapel">
+                <span class="badge" style="background:var(--primary-soft); color:var(--primary-dark);">
+                  ${escapeHtml(g.mapel || '-')}
+                </span>
+              </td>
+              <td>
+                <button class="btn small edit" onclick="window.enterEditModeGuru('${g.id}')">Edit</button>
+                <button class="btn small delete" onclick="window.deleteGuru('${g.id}')">Hapus</button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
   `;
 
-  // ===============================
-  // AMBIL DOM
-  // ===============================
-  const fileGuru = document.getElementById('fileGuru');
-  const btnImportGuru = document.getElementById('btnImportGuru');
-  const sheetSelectorGuru = document.getElementById('sheetSelectorGuru');
-  const guruTable = document.getElementById('guruTable');
-  const guruName = document.getElementById('guruName');
-  const guruNip = document.getElementById('guruNip');
-  const guruMapel = document.getElementById('guruMapel');
-  const btnAddGuru = document.getElementById('btnAddGuru');
-  const btnDeleteSelected = document.getElementById('btnDeleteSelected');
-  const checkAllGuru = document.getElementById('checkAllGuru');
+  // --- 3. EVENT LISTENERS ---
 
-  // ===============================
-  // STATE
-  // ===============================
-  let guruWorkbook = null;
+  // Tambah Guru Manual
+  document.getElementById('btnAddGuru').onclick = async () => {
+    const btn = document.getElementById('btnAddGuru');
+    const name = document.getElementById('guruName').value.trim();
+    const nip = document.getElementById('guruNip').value.trim();
+    const mapel = document.getElementById('guruMapel').value;
 
-  // ===============================
-  // RENDER TABLE
-  // ===============================
-  function renderTable(){
-    guruTable.innerHTML = '';
+    if (!name || !mapel || !nip) return alert("Nama, NIP, dan Mapel wajib diisi!");
 
-    guruCache.forEach(g=>{
-      guruTable.innerHTML += `
-        <tr>
-          <td>
-            <input type="checkbox" class="check-guru" value="${g.id}">
-          </td>
-          <td>${g.name}</td>
-          <td>${g.nip || '-'}</td>
-          <td>${g.mapel || '-'}</td>
-          <td>
-            <button class="btn small" data-edit="${g.id}">Edit</button>
-            <button class="btn small danger" data-del="${g.id}">Hapus</button>
-          </td>
-        </tr>
-      `;
-    });
-  }
-  renderTable(); 
+    const isDuplicate = guruCache.some(g => String(g.nip) === String(nip));
+    if (isDuplicate) return alert(`Gagal! Guru dengan NIP ${nip} sudah terdaftar.`);
 
-function renderMapelOptions(){
-  guruMapel.innerHTML = '<option value="">-- Pilih Mapel --</option>';
+    btn.disabled = true;
+    btn.innerHTML = "Menyimpan...";
 
-  mapelCache.forEach(m=>{
-    guruMapel.innerHTML += `
-      <option value="${m.name}">
-        ${m.name}
-      </option>
-    `;
-  });
-}
-renderMapelOptions();
-
-function cekFormGuru(){
-  const name = guruName.value.trim();
-  const mapel = guruMapel.value;
-
-  btnAddGuru.disabled = !(name && mapel);
-}
-
-// pantau perubahan
-guruName.addEventListener('input', cekFormGuru);
-guruMapel.addEventListener('change', cekFormGuru);
-
-  // ===============================
-  // CHECK ALL
-  // ===============================
-  checkAllGuru.addEventListener('change', ()=>{
-    document.querySelectorAll('.check-guru')
-      .forEach(cb => cb.checked = checkAllGuru.checked);
-  });
-
-  // ===============================
-  // HAPUS MASSAL
-  // ===============================
-  btnDeleteSelected.addEventListener('click', async ()=>{
-    const checked = [...document.querySelectorAll('.check-guru:checked')];
-
-    if(!checked.length)
-      return alert('Pilih data yang akan dihapus');
-
-    if(!confirm(`Hapus ${checked.length} data guru?`))
-      return;
-
-    const batch = writeBatch(db);
-
-    checked.forEach(cb=>{
-      batch.delete(doc(guruCol, cb.value));
-    });
-
-    await batch.commit();
-    alert('Data terpilih berhasil dihapus');
-  });
-
-  // ===============================
-  // TAMBAH MANUAL
-  // ===============================
-btnAddGuru.addEventListener('click', async ()=>{
-  const name  = guruName.value.trim();
-  const nip   = guruNip.value.trim();
-  const mapel = guruMapel.value;
-
-  if(!name)
-    return alert('Nama guru wajib diisi');
-
-  if(!mapel)
-    return alert('Mapel wajib dipilih');
-
-  if(nip && guruCache.some(g=>g.nip === nip))
-    return alert('NIP sudah ada');
-
-  await addDoc(guruCol,{
-    name,
-    nip,
-    mapel,
-    createdAt: serverTimestamp()
-  });
-
-  guruName.value = '';
-  guruNip.value  = '';
-  guruMapel.value = '';
-
-  btnAddGuru.disabled = true;
-});
-
-
-  // ===============================
-  // EDIT & HAPUS SATUAN
-  // ===============================
-  guruTable.addEventListener('click', async (e)=>{
-    const delId = e.target.dataset.del;
-    const editId = e.target.dataset.edit;
-
-    if(delId){
-      if(!confirm('Hapus guru ini?')) return;
-      await deleteDoc(doc(guruCol, delId));
-    }
-
-    if(editId){
-      const g = guruCache.find(x=>x.id === editId);
-      if(!g) return;
-
-      const name = prompt('Nama Guru', g.name);
-      if(!name) return;
-
-      const nip = prompt('NIP', g.nip || '');
-      if(nip && guruCache.some(x=>x.nip === nip && x.id !== g.id))
-        return alert('NIP sudah digunakan');
-
-      let mapel = g.mapel || '';
-const pilihan = mapelCache.map(m=>m.name).join(', ');
-
-const input = prompt(
-  `Mapel (pilih salah satu):\n${pilihan}`,
-  mapel
-);
-
-if(input && !mapelCache.some(m=>m.name === input))
-  return alert('Mapel tidak terdaftar');
-
-mapel = input;
-
-
-      await updateDoc(doc(guruCol, g.id),{
-        name,
-        nip,
-        mapel
+    try {
+      await addDoc(guruCol, { 
+        name, 
+        nip, 
+        mapel, 
+        createdAt: serverTimestamp() 
       });
+      alert("Guru berhasil ditambahkan!");
+      if(typeof renderGuruEditor === "function") renderGuruEditor(); // Refresh UI
+    } catch (e) {
+      alert("Gagal menambah data.");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = "Tambah Guru";
     }
-  });
+  };
 
-  // ===============================
-  // IMPORT EXCEL
-  // ===============================
-  fileGuru.addEventListener('change', async (e)=>{
-    const file = e.target.files[0];
-    if(!file) return;
+  // Logika Import Excel
+  let workbookGuru;
+  document.getElementById('btnImportGuru').onclick = () => {
+    const fileInput = document.getElementById('fileGuru');
+    if (!fileInput.files[0]) return alert("Pilih file Excel dulu!");
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result);
+      workbookGuru = XLSX.read(data, { type: 'array' });
+      const selector = document.getElementById('sheetSelectorGuru');
+      selector.innerHTML = '<option value="">-- Pilih Sheet --</option>' + 
+        workbookGuru.SheetNames.map(s => `<option value="${s}">${s}</option>`).join('');
+      selector.disabled = false;
+      alert("File terbaca. Silakan pilih sheet.");
+    };
+    reader.readAsArrayBuffer(fileInput.files[0]);
+  };
 
-    const data = await file.arrayBuffer();
-    guruWorkbook = XLSX.read(data);
+  document.getElementById('sheetSelectorGuru').onchange = async (e) => {
+    const sheetName = e.target.value;
+    if (!sheetName) return;
+    
+    const worksheet = workbookGuru.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+    
+    if (jsonData.length === 0) return alert("Sheet kosong!");
+    if (!confirm(`Import ${jsonData.length} data? NIP ganda otomatis diabaikan.`)) return;
 
-    sheetSelectorGuru.innerHTML =
-      '<option value="">-- Pilih Sheet --</option>';
-
-    guruWorkbook.SheetNames.forEach(s=>{
-      sheetSelectorGuru.innerHTML +=
-        `<option value="${s}">${s}</option>`;
-    });
-
-    sheetSelectorGuru.disabled = false;
-  });
-
-  btnImportGuru.addEventListener('click', async ()=>{
-    if(!guruWorkbook) return alert('Pilih file Excel dulu');
-    if(!sheetSelectorGuru.value) return alert('Pilih sheet');
-
-    const ws = guruWorkbook.Sheets[sheetSelectorGuru.value];
-    const rows = XLSX.utils.sheet_to_json(ws,{
-      header:['name','nip','mapel'],
-      range:1
-    });
-
-    const existingNip = guruCache.map(g=>String(g.nip||''));
     const batch = writeBatch(db);
+    let importCount = 0;
+    const existingNips = guruCache.map(g => String(g.nip));
 
-    let added = 0;
-    let skipped = 0;
-
-    rows.forEach(r=>{
-      if(!r.name) return;
-
-      const nip = String(r.nip||'').trim();
-
-      if(nip && existingNip.includes(nip)){
-        skipped++; return;
+    jsonData.forEach(row => {
+      const rawNip = String(row.NIP || row.nip || '');
+      const rawName = row.Nama || row.nama || '';
+      const rawMapel = row.Mapel || row.mapel || '';
+      
+      if (rawNip && !existingNips.includes(rawNip)) {
+        const newRef = doc(guruCol);
+        batch.set(newRef, {
+          name: rawName,
+          nip: rawNip,
+          mapel: rawMapel,
+          createdAt: serverTimestamp()
+        });
+        existingNips.push(rawNip);
+        importCount++;
       }
-
-      batch.set(doc(guruCol),{
-        name: String(r.name).trim(),
-        nip,
-        mapel: r.mapel || '',
-        createdAt: serverTimestamp()
-      });
-
-      added++;
     });
 
-    if(!added)
-      return alert(`Tidak ada data baru\nDuplikat: ${skipped}`);
+    if (importCount > 0) {
+      await batch.commit();
+      alert(`Berhasil impor ${importCount} guru.`);
+    } else {
+      alert("Tidak ada data baru yang unik.");
+    }
+    renderGuruEditor();
+  };
 
-    await batch.commit();
-    alert(`Import selesai\nDitambah: ${added}\nDuplikat: ${skipped}`);
+  // Checkbox & Bulk Delete
+  document.getElementById('checkAllGuru').onclick = (e) => {
+    document.querySelectorAll('.checkGuru').forEach(cb => cb.checked = e.target.checked);
+  };
 
-    fileGuru.value = '';
-  });
+  document.getElementById('btnDeleteSelectedGuru').onclick = async () => {
+    const selected = document.querySelectorAll('.checkGuru:checked');
+    if (selected.length === 0) return alert("Pilih guru yang ingin dihapus.");
+    if (confirm(`Hapus ${selected.length} guru terpilih?`)) {
+      const batch = writeBatch(db);
+      selected.forEach(cb => { batch.delete(doc(db, 'guru', cb.dataset.id)); });
+      await batch.commit();
+      alert("Data terpilih berhasil dihapus.");
+      renderGuruEditor();
+    }
+  };
+}
+
+// --- 4. GLOBAL FUNCTIONS (Luar renderGuruEditor) ---
+
+window.deleteGuru = async (id) => {
+  if (!confirm("Hapus guru ini?")) return;
+  try {
+    await deleteDoc(doc(db, 'guru', id));
+    alert("Terhapus!");
+    // Panggil ulang render jika ada dalam scope global
+  } catch (e) { alert("Gagal menghapus"); }
+};
+
+window.enterEditModeGuru = (id) => {
+  const guru = guruCache.find(g => g.id === id);
+  if (!guru) return;
+
+  const row = document.getElementById(`row-${id}`);
+  const mapelOptions = mapelCache.map(m => 
+    `<option value="${m.name}" ${m.name === guru.mapel ? 'selected' : ''}>${m.name}</option>`
+  ).join('');
+
+  row.innerHTML = `
+    <td colspan="2"><input type="text" id="edit-name-${id}" value="${escapeHtml(guru.name)}" style="width:100%"></td>
+    <td><input type="text" id="edit-nip-${id}" value="${escapeHtml(guru.nip || '')}" style="width:100%"></td>
+    <td><select id="edit-mapel-${id}" style="width:100%">${mapelOptions}</select></td>
+    <td>
+      <button class="btn small" onclick="window.saveEditGuru('${id}')">Simpan</button>
+      <button class="btn small muted" onclick="renderGuruEditor()">Batal</button>
+    </td>
+  `;
+};
+
+window.saveEditGuru = async (id) => {
+  const newName = document.getElementById(`edit-name-${id}`).value.trim();
+  const newNip = document.getElementById(`edit-nip-${id}`).value.trim();
+  const newMapel = document.getElementById(`edit-mapel-${id}`).value;
+
+  if (!newName || !newNip) return alert("Nama dan NIP wajib diisi!");
+
+  const isDuplicate = guruCache.some(g => String(g.nip) === String(newNip) && g.id !== id);
+  if (isDuplicate) return alert(`NIP ${newNip} sudah digunakan oleh orang lain.`);
+
+  try {
+    await updateDoc(doc(db, 'guru', id), {
+      name: newName,
+      nip: newNip,
+      mapel: newMapel,
+      updatedAt: serverTimestamp()
+    });
+    alert("Berhasil diperbarui!");
+    renderGuruEditor();
+  } catch (e) { alert("Gagal memperbarui."); }
+};
+// Tambahkan ini di bagian bawah skrip modul Anda
+window.renderGuruEditor = renderGuruEditor;
+
+
+function showToast(title, message, type = 'success') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  
+  toast.innerHTML = `
+    <div class="toast-icon">${type === 'success' ? '✓' : 'ℹ'}</div>
+    <div class="toast-content">
+      <span class="toast-title">${title}</span>
+      <span class="toast-msg">${message}</span>
+    </div>
+  `;
+  
+  container.appendChild(toast);
+
+  // Trigger animasi masuk
+  setTimeout(() => toast.classList.add('show'), 100);
+
+  // Hapus otomatis setelah 4 detik
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 500);
+  }, 4000);
+}
+
+// Ekspos ke window agar bisa dipanggil di mana saja
+window.showToast = showToast;
+
+
+
+// ====== AUTH SISTEM PIN (VERSI PERBAIKAN) ======
+function checkPin() {
+    const userPin = prompt("Masukkan PIN Akses:");
+    
+    if (userPin === PIN_ADMIN) {
+        isAuthorized = true;
+        userRole = 'ADMIN';
+        activeTab = 'DAFTAR_SANTRI'; // Admin langsung ke menu manajemen
+        alert("Login berhasil sebagai ADMIN");
+    } else if (userPin === PIN_USER) {
+        isAuthorized = true;
+        userRole = 'USER';
+        activeTab = 'UH'; // User biasa langsung ke menu input
+        alert("Login berhasil sebagai PENGINPUT");
+    } else {
+        alert("PIN Salah!");
+        return; // Keluar jika salah
+    }
+    
+    // Update tampilan setelah login sukses
+    renderActiveTab();
+}
+
+function updateUIStatus() {
+    userLabel.innerText = isAuthorized ? "Mode: Petugas" : "Offline";
+    btnLogin.innerText = isAuthorized ? "Logout" : "Login (PIN)";
+    // Tombol login berfungsi jadi logout kalau sudah masuk
+    btnLogin.onclick = isAuthorized ? () => { isAuthorized = false; updateUIStatus(); renderActiveTab(); } : checkPin;
 }
 
 
+// Tambahkan ini di fungsi logout Anda
+function logout() {
+  isAuthorized = false;
+  userRole = null;
+  document.body.classList.remove('role-user'); // Menghapus mode user
+  renderActiveTab();
+}
+
+// Tambahkan event ke tombol logout jika ada di HTML
+if(btnLogout) {
+  btnLogout.style.display = 'block'; // Munculkan tombol logout
+  btnLogout.onclick = logout;
+}
 
 
-// ====== AUTH ======
-btnLogin.addEventListener('click', async ()=>{ 
-  const provider = new GoogleAuthProvider();
-  try{ await signInWithPopup(auth, provider); }catch(e){ console.error(e); alert('Login gagal: '+ (e.message||e)); }
-});
-btnLogout.addEventListener('click', ()=> signOut(auth));
-
-onAuthStateChanged(auth, user=>{
-  if(user){ userLabel.innerText = user.displayName || user.email; btnLogin.style.display='none'; btnLogout.style.display='inline-block'; }
-  else { userLabel.innerText = 'Offline'; btnLogin.style.display='inline-block'; btnLogout.style.display='none'; }
-});
-
-// === LOGIKA LOGIN ===
-const googleProvider = new GoogleAuthProvider();
-
-btnLogin.onclick = () => {
-  signInWithPopup(auth, googleProvider)
-    .then(() => console.log("Login Berhasil"))
-    .catch((err) => alert("Gagal Login: " + err.message));
-};
-
-btnLogout.onclick = () => {
-  signOut(auth).then(() => {
-    location.reload(); // Segarkan halaman saat logout
-  });
-};
-
-// === AUTH GUARD (Paling Penting) ===
-onAuthStateChanged(auth, (user) => {
-  const mainContent = document.getElementById('mainContent');
-  const loginPrompt = document.getElementById('loginPrompt');
-
-  if (user) {
-    // Jika User Login
-    userLabel.innerText = "Halo, " + user.displayName;
-    btnLogin.style.display = 'none';
-    btnLogout.style.display = 'block';
-    
-    mainContent.style.display = 'block'; // Tampilkan aplikasi
-    loginPrompt.style.display = 'none';  // Sembunyikan pesan login
-    
-    // Jalankan inisialisasi data di sini jika diperlukan
-    renderActiveTab(); 
-  } else {
-    // Jika User Logout
-    userLabel.innerText = "Offline";
-    btnLogin.style.display = 'block';
-    btnLogout.style.display = 'none';
-    
-    mainContent.style.display = 'none'; // Sembunyikan aplikasi
-    loginPrompt.style.display = 'block'; // Tampilkan pesan login
+window.onbeforeunload = function() {
+  if (document.querySelectorAll('.input-score').some(i => i.value !== "")) {
+    return "Data belum disimpan, yakin ingin keluar?";
   }
-});
+};
 
+
+window.editMapelKKM = async (id, mapelName, oldKKM) => {
+  const newKKM = prompt(`Ubah KKM untuk ${mapelName}:`, oldKKM);
+  
+  if (newKKM === null || newKKM === "") return;
+  const kkmNum = parseInt(newKKM);
+  
+  if (isNaN(kkmNum) || kkmNum < 0 || kkmNum > 100) {
+    alert("KKM harus berupa angka antara 0 - 100");
+    return;
+  }
+
+  // Konfirmasi perubahan massal
+  if (!confirm(`Mengubah KKM ${mapelName} menjadi ${kkmNum} akan memperbarui semua warna status (Lulus/Remedial) pada tabel transaksi. Lanjutkan?`)) return;
+
+  try {
+    // 1. Update KKM di dokumen Mapel itu sendiri
+    const mapelRef = doc(db, 'mapel', id);
+    await updateDoc(mapelRef, { kkm: kkmNum });
+
+    // 2. Cari & Update massal semua data NILAI yang memiliki mapel ini
+    const q = query(collection(db, 'nilai'), where("mapel", "==", mapelName));
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      const batch = writeBatch(db);
+      querySnapshot.forEach((docSnap) => {
+        batch.update(docSnap.ref, { kkm: kkmNum });
+      });
+      await batch.commit();
+      alert(`Berhasil! KKM diperbarui dan ${querySnapshot.size} data transaksi telah disesuaikan.`);
+    } else {
+      alert(`KKM Mapel berhasil diubah.`);
+    }
+  } catch (error) {
+    console.error("Error updating KKM massal:", error);
+    alert("Terjadi kesalahan saat sinkronisasi data.");
+  }
+};
+
+// Daftarkan aksi ke window agar bisa dipanggil onclick dari HTML
+window.deleteGuru = async (id) => {
+  if (!confirm("Hapus data guru ini?")) return;
+  await deleteDoc(doc(db, 'guru', id));
+};
+
+window.editGuru = async (id, oldName) => {
+  const newName = prompt("Ubah nama guru:", oldName);
+  if (newName && newName !== oldName) {
+    await updateDoc(doc(db, 'guru', id), { name: newName });
+  }
+};
+
+
+/* --- DAFTARKAN FUNGSI KE GLOBAL AGAR BISA DIPANGGIL ONCLICK --- */
+
+window.renderGuruEditor = renderGuruEditor;
+
+window.enterEditModeGuru = (id) => {
+  const guru = guruCache.find(g => g.id === id);
+  if (!guru) return;
+
+  const row = document.getElementById(`row-${id}`);
+  const mapelOptions = mapelCache.map(m => 
+    `<option value="${m.name}" ${m.name === guru.mapel ? 'selected' : ''}>${m.name}</option>`
+  ).join('');
+
+  row.innerHTML = `
+    <td colspan="2"><input type="text" id="edit-name-${id}" value="${escapeHtml(guru.name)}" style="width:100%"></td>
+    <td><input type="text" id="edit-nip-${id}" value="${escapeHtml(guru.nip || '')}" style="width:100%"></td>
+    <td><select id="edit-mapel-${id}" style="width:100%">${mapelOptions}</select></td>
+    <td>
+      <button class="btn small" onclick="window.saveEditGuru('${id}')">Simpan</button>
+      <button class="btn small ghost" onclick="window.renderGuruEditor()">Batal</button>
+    </td>
+  `;
+};
+
+window.saveEditGuru = async (id) => {
+  // Ambil value dari input menggunakan ID unik yang dibuat di enterEditModeGuru
+  const newName = document.getElementById(`edit-name-${id}`).value.trim();
+  const newNip = document.getElementById(`edit-nip-${id}`).value.trim();
+  const newMapel = document.getElementById(`edit-mapel-${id}`).value;
+
+  if (!newName || !newNip) return alert("Nama dan NIP wajib diisi!");
+
+  // Cek duplikasi NIP (kecuali untuk guru yang sedang diedit ini sendiri)
+  const isDuplicate = guruCache.some(g => String(g.nip) === String(newNip) && g.id !== id);
+  if (isDuplicate) return alert(`NIP ${newNip} sudah digunakan oleh orang lain.`);
+
+  try {
+    const guruRef = doc(db, 'guru', id);
+    await updateDoc(guruRef, {
+      name: newName,
+      nip: newNip,
+      mapel: newMapel,
+      updatedAt: serverTimestamp()
+    });
+    alert("Berhasil diperbarui!");
+    renderGuruEditor(); // Refresh tampilan tabel
+  } catch (e) { 
+    console.error(e);
+    alert("Gagal memperbarui data."); 
+  }
+};
+
+
+// Inisialisasi awal tombol login
+btnLogin.onclick = checkPin;
+btnLogout.style.display = 'none'; // Sembunyikan tombol logout bawaan lama
 // initial render
 renderActiveTab();
 renderTransactionsWith(window._latestTx||[]);
+
 </script>
 
 </body>
